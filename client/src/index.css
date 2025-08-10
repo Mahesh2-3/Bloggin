@@ -1,0 +1,150 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-normal: "Inter";
+  --font-main: "Aladin";
+}
+
+@layer components {
+  .glass-bg {
+    background: rgba(255, 255, 255, 0);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  .glass-box {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+}
+
+.split-word {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.split-char {
+  display: inline-block;
+}
+
+.ql-container {
+  height: 100% !important;
+}
+
+.ql-editor {
+  min-height: 300px;
+  cursor: text;
+  overflow-x: visible;
+}
+
+.dark .ql-toolbar .ql-stroke {
+  stroke: #fff !important;
+  /* Changes the stroke color of toolbar icons to red */
+}
+
+.dark .ql-toolbar .ql-fill {
+  fill: #fff !important;
+  /* Changes the fill color of toolbar icons to blue */
+}
+
+.dark .ql-toolbar .ql-picker {
+  color: #fff !important;
+  /* Changes the text color of dropdowns to green */
+}
+
+
+.hide-scrollbar {
+  overflow: auto;
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: 0;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+  /* Chrome, Safari, Opera */
+}
+
+.slide {
+  display: inline-block;
+  flex-direction: column;
+  height: 60px;
+  overflow-y: hidden;
+  transition: all cubic-bezier(0.71, 0.03, 0.34, 1);
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 60px;
+  animation: wordSlider 15s infinite cubic-bezier(0.9, 0.01, 0.3, 0.99);
+  color: aqua;
+}
+
+
+
+.star.sparkle {
+  animation: sparkle 0.5s ease;
+}
+
+@keyframes sparkle {
+  0% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 0px gold);
+  }
+
+  50% {
+    transform: scale(1.3);
+    filter: drop-shadow(0 0 10px gold);
+  }
+
+  100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 0px gold);
+  }
+}
+
+
+
+
+@keyframes wordSlider {
+  0% {
+    transform: translateY(0%);
+  }
+
+  25% {
+    transform: translateY(-26%);
+  }
+
+  50% {
+    transform: translateY(-52%);
+  }
+
+  75% {
+    transform: translateY(-76%);
+  }
+}
+
+html {
+  background-color: white;
+}
+
+.dark html {
+  background-color: black;
+}
+
+button {
+  cursor: pointer;
+}
