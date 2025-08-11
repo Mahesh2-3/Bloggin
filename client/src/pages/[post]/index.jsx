@@ -17,7 +17,7 @@ import { FiEdit3 } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 
 const PostPage = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const { postId } = useParams();
   const { user } = useAuth();
   const [PostData, setPostData] = useState(null);
@@ -38,7 +38,7 @@ const PostPage = () => {
 
   const fetchPost = async () => {
     const res = await Functions.fetchPost(postId);
-    setPostData(res.data)
+    setPostData(res.data);
   };
 
   const fetchComments = async () => {
@@ -88,23 +88,23 @@ const PostPage = () => {
     setCommentInput(comment.content);
   };
 
-const DeletePost = async (postId) => {
-  try {
-    const res = await axios.delete(
-      `${import.meta.env.VITE_BASE_URL}/api/posts/${postId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }
-    );
-    showMessage("Post deleted successfully", "#00b300");
-    navigate("/home"); // Redirect to homepage
-  } catch (error) {
-    showMessage("Failed to delete post", "#ff0000");
-    console.error(error);
-  }
-};
+  const DeletePost = async (postId) => {
+    try {
+      const res = await axios.delete(
+        `${import.meta.env.VITE_BASE_URL}/api/posts/${postId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      showMessage("Post deleted successfully", "#00b300");
+      navigate("/home"); // Redirect to homepage
+    } catch (error) {
+      showMessage("Failed to delete post", "#ff0000");
+      console.error(error);
+    }
+  };
 
   const FollowUser = async (toId) => {
     if (Following) {
@@ -123,7 +123,7 @@ const DeletePost = async (postId) => {
 
   const onLikeClick = async () => {
     const result = await Functions.handleLike(postId); // Await result
-    console.log(result)
+    console.log(result);
     if (result.statusText == "OK") {
       setLiked(result.data.liked); // Set correct like state from response
       setLikeCount(result.data.likeCount);
@@ -186,31 +186,35 @@ const DeletePost = async (postId) => {
               <span>{PostData?.author?.following.length} Following</span>
             </div>
           </div>
-          {PostData?.author._id == user?._id && <div className="flex gap-2 items-center justify-end">
-            <Link to={`/edit/${PostData?._id}`}><button className="group flex items-center bg-white text-black px-3 py-2 rounded-full transition-all gap-2 duration-300 lg:hover:px-5">
-              <FiEdit3 className="text-lg transition-transform duration-500" />
-              <span
-                className="ml-2 text-sm whitespace-nowrap transition-all duration-500 
+          {PostData?.author._id == user?._id && (
+            <div className="flex gap-2 items-center justify-end">
+              <Link to={`/edit/${PostData?._id}`}>
+                <button className="group flex items-center bg-white text-black px-3 py-2 rounded-full transition-all gap-2 duration-300 lg:hover:px-5">
+                  <FiEdit3 className="text-lg transition-transform duration-500" />
+                  <span
+                    className="ml-2 text-sm whitespace-nowrap transition-all duration-500 
                               max-w-xs overflow-hidden 
                               md:max-w-0 md:group-hover:max-w-xs"
+                  >
+                    Edit Post
+                  </span>
+                </button>
+              </Link>
+              <button
+                onClick={() => setShowDeleteModal(true)}
+                className="group flex items-center bg-white text-black px-3 py-2 rounded-full transition-all gap-2 duration-300 lg:hover:px-5"
               >
-                Edit Post
-              </span>
-            </button></Link>
-            <button
-              onClick={() => setShowDeleteModal(true)}
-              className="group flex items-center bg-white text-black px-3 py-2 rounded-full transition-all gap-2 duration-300 lg:hover:px-5"
-            >
-              <MdOutlineDelete className="text-xl transition-transform duration-500" />
-              <span
-                className="ml-2 text-sm whitespace-nowrap transition-all duration-500 
+                <MdOutlineDelete className="text-xl transition-transform duration-500" />
+                <span
+                  className="ml-2 text-sm whitespace-nowrap transition-all duration-500 
                                           max-w-xs overflow-hidden 
                                            md:max-w-0 md:group-hover:max-w-xs"
-              >
-                Delete Post
-              </span>
-            </button>
-          </div>}
+                >
+                  Delete Post
+                </span>
+              </button>
+            </div>
+          )}
           <div className="flex flex-col gap-3 mt-14">
             <h1 className="text-2xl sm:text-4xl font-bold">
               {PostData?.title}
@@ -348,8 +352,7 @@ const DeletePost = async (postId) => {
         )}
       </div>
       {showDeleteModal && (
-       <div className="fixed inset-0 z-50 flex items-center justify-center bg-transparent backdrop-blur-sm">
-
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-transparent backdrop-blur-sm">
           <div className="bg-white text-black dark:bg-[#1e1e1e] dark:text-white p-6 rounded-lg shadow-xl w-[90%] max-w-md text-center">
             <h2 className="text-xl font-bold mb-4">
               Are you sure you want to delete this post?

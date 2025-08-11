@@ -13,11 +13,13 @@ const Search = () => {
   useEffect(() => {
     const fetchPostsAndUsers = async () => {
       try {
+        // Fetch posts
         const res = await fetch(`${import.meta.env.VITE_BASE_URL}/api/posts`);
         if (!res.ok) throw new Error("Failed to fetch posts");
         const data = await res.json();
         setPosts(data);
 
+        // Fetch users
         const response = await Functions.getAllUsers();
         if (response.status === 200) {
           setUsers(response.data);
@@ -26,12 +28,14 @@ const Search = () => {
         console.error("Error fetching:", error);
       }
     };
+
     fetchPostsAndUsers();
   }, []);
 
   const filteredPosts = posts.filter((post) =>
     post.title.toLowerCase().includes(searchParam.toLowerCase())
   );
+
   const filteredUsers = users.filter(
     (u) =>
       u.username.toLowerCase().includes(searchParam.toLowerCase()) ||
@@ -43,6 +47,7 @@ const Search = () => {
       <Navbar />
 
       <div className="md:w-[700px] w-full flex flex-col mx-auto px-4">
+        {/* Tabs */}
         {searchParam.trim() !== "" && (
           <div className="flex gap-4 border-b border-gray-500/30 dark:border-gray-50/50 pt-6 mb-6">
             <button
@@ -68,6 +73,7 @@ const Search = () => {
           </div>
         )}
 
+        {/* Content */}
         <div className="w-full relative">
           {activeTab === "posts" && (
             <>

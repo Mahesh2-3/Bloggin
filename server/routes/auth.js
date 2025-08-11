@@ -9,7 +9,12 @@ const {
   verifyOtp,
   handleReportProblem,
   handleFeedback,
+  verifyForgotOtp,
+  handleForgotPassword,
+  changePassword,
+  resetPassword,
 } = require("../controllers/authController");
+const verifyToken = require("../middleware/auth");
 
 const router = express.Router();
 
@@ -62,6 +67,10 @@ router.post("/email/send-otp", sendOtpToEmail);
 router.post("/email/verify-otp", verifyOtp);
 router.post("/email/problem",handleReportProblem);
 router.post("/email/feedback",handleFeedback);
+router.post("/email/forgotPassword",handleForgotPassword);
+router.post("/email/verifyforgot",verifyForgotOtp);
+router.put("/email/change-password",verifyToken ,changePassword);
+router.put("/email/reset-password" ,resetPassword);
 
 router.post("/email/login", async (req, res) => {
   const { identifier, password } = req.body; // identifier can be email or username

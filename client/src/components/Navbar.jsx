@@ -40,7 +40,7 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className="fixed top-0 left-0 w-full z-50 backdrop-blur-lg bg-white/30 dark:bg-black/30 border-b border-gray-400/30 dark:border-white/10 m-0 p-0 flex items-center justify-center">
+    <nav className="fixed top-0 left-0 w-full z-50 backdrop-blur- dark:bg-black/70 border-b border-gray-400/30 dark:border-white/10 m-0 p-0 flex items-center justify-center">
       {isSearch && (
         <div className="flex bg-white/50 dark:bg-black border border-[#5f5f5f] px-4 z-10 py-2 rounded-3xl items-center absolute sm:top-2 top-16">
           <CiSearch size={20} strokeWidth={0.5} />
@@ -126,7 +126,7 @@ const Navbar = () => {
                   </li>
                   <li className="flex items-center justify-between cursor-pointer">
                     <div className="flex items-center gap-2">
-                      {theme === "dark" ? <CiDark /> : <CiLight />}
+                      {theme === "dark" ? <CiDark /> : <CiLight strokeWidth={1} />}
                       <span>Theme</span>
                     </div>
                     <ThemeSwitch />

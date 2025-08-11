@@ -1,25 +1,23 @@
 import React, { useRef, useState, useEffect } from 'react';
 import Navbar from "../components/Navbar";
-import { useSearchParam } from '../context/Searchcontext';
-import { FaChevronLeft, FaChevronRight} from 'react-icons/fa';
+import { Link } from 'react-router-dom';
+import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { GoNorthStar } from "react-icons/go";
 import { PiArrowBendRightDownBold } from "react-icons/pi";
-import { Link, useNavigate } from 'react-router-dom';
 import useAuth from '../context/Auth';
 import Blogcard from '../components/Blogcard';
 import Functions from '../components/Functions';
 
-
 const Home = () => {
-  const { user, login, logout } = useAuth()
-  const navigate = useNavigate()
-  const { searchParam } = useSearchParam();
-  const [posts, setposts] = useState([])
-  const [Presenykey, setPresenykey] = useState("All")
-  const FilteredTasks = Presenykey == "All" ? posts : posts.filter((post) => post.tags.includes(Presenykey))
-  const keywords = [
-    "All", ...Functions.predefinedTags
-  ];
+  const { user, login, logout } = useAuth();
+  const [posts, setPosts] = useState([]);
+  const [presentKey, setPresentKey] = useState("All");
+
+  // Filter posts based on tag or show all
+  const filteredPosts = presentKey === "All" ? posts : posts.filter(post => post.tags.includes(presentKey));
+  
+  // Tags for filtering
+  const keywords = ["All", ...Functions.predefinedTags];
 
   const scrollRef = useRef(null);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
@@ -27,6 +25,7 @@ const Home = () => {
 
   const scrollByAmount = 150;
 
+  // Update arrow visibility based on scroll position
   const handleScroll = () => {
     const el = scrollRef.current;
     if (!el) return;
@@ -43,24 +42,19 @@ const Home = () => {
     scrollRef.current.scrollBy({ left: scrollByAmount, behavior: 'smooth' });
   };
 
+  // Fetch posts and setup scroll event on mount
   useEffect(() => {
-
-  const fetchPosts = async () => {
+    const fetchPosts = async () => {
       try {
         const res = await fetch(`${import.meta.env.VITE_BASE_URL}/api/posts`, {
           method: "GET",
-          headers: {
-            "Content-Type": "application/json"
-          }
+          headers: { "Content-Type": "application/json" },
         });
 
-        if (!res.ok) {
-          throw new Error("Failed to fetch posts");
-        }
+        if (!res.ok) throw new Error("Failed to fetch posts");
 
         const data = await res.json();
-        setposts(data);
-        console.log(data)
+        setPosts(data);
       } catch (error) {
         console.error("Error fetching posts:", error);
       }
@@ -76,16 +70,14 @@ const Home = () => {
     return () => {
       if (el) el.removeEventListener('scroll', handleScroll);
     };
-
   }, []);
-
 
   return (
     <div className='w-full pt-[70px] bg-white dark:bg-black text-black dark:text-white'>
       <Navbar />
 
       <div className='lg:w-[60%] w-full flex mx-auto px-4'>
-        <div className='sm:w-[65%] w-full border-r-1 pt-10  border-gray-500/30 dark:border-gray-50/50 relative'>
+        <div className='sm:w-[65%] w-full border-r-1 pt-10 border-gray-500/30 dark:border-gray-50/50 relative'>
           {showLeftArrow && (
             <button
               onClick={scrollLeft}
@@ -100,12 +92,19 @@ const Home = () => {
             ref={scrollRef}
           >
             {keywords.map((keyword, index) => (
-              <span key={index} onClick={() => setPresenykey(keyword)} className={`whitespace-nowrap cursor-pointer  ${Presenykey == keyword ? "font-bold text-black dark:text-white" : "font-normal text-gray-700 dark:text-gray-300"}`}>
+              <span
+                key={index}
+                onClick={() => setPresentKey(keyword)}
+                className={`whitespace-nowrap cursor-pointer ${
+                  presentKey === keyword
+                    ? "font-bold text-black dark:text-white"
+                    : "font-normal text-gray-700 dark:text-gray-300"
+                }`}
+              >
                 {keyword}
               </span>
             ))}
           </div>
-
 
           {showRightArrow && (
             <button
@@ -115,53 +114,88 @@ const Home = () => {
               <FaChevronRight className="text-xl text-gray-400" />
             </button>
           )}
+
           <div>
-            {FilteredTasks.map((post) => (
-             <Blogcard key={post._id} blog={post}/>
-            ))}
-            {FilteredTasks.length == 0 && <div className='mt-10 mx-auto w-fit text-gray-700 dark:text-gray-300'>
-              No Posts Found
-            </div>}
+            {filteredPosts.length > 0 ? (
+              filteredPosts.map(post => <Blogcard key={post._id} blog={post} />)
+            ) : (
+              <div className='mt-10 mx-auto w-fit text-gray-700 dark:text-gray-300'>
+                No Posts Found
+              </div>
+            )}
           </div>
         </div>
+
         <div className='w-[35%] sm:block hidden'>
           <div className='flex p-6 flex-col gap-6'>
-            <h1 className='font-semibold flex items-center gap-2'>Best Picks <PiArrowBendRightDownBold size={16} className='relative top-1' />
+            <h1 className='font-semibold flex items-center gap-2'>
+              Best Picks <PiArrowBendRightDownBold size={16} className='relative top-1' />
             </h1>
             {posts.slice(0, 3).map((post, index) => (
               <div key={index} className='flex flex-col gap-2'>
                 <div className='flex items-center gap-2'>
-                  <img referrerPolicy="no-referrer" className='h-8 w-8 rounded-full' src={post.author.profilePic} alt="Profile" />
-                  <Link to={`/${post.author.username}`}><div className=' text-gray-500 cursor-pointer hover:underline dark:text-gray-400 text-sm'>{post.author.name}</div></Link>
+                  <img
+                    referrerPolicy="no-referrer"
+                    className='h-8 w-8 rounded-full'
+                    src={post.author.profilePic}
+                    alt="Profile"
+                  />
+                  <Link to={`/${post.author.username}`}>
+                    <div className='text-gray-500 cursor-pointer hover:underline dark:text-gray-400 text-sm'>
+                      {post.author.name}
+                    </div>
+                  </Link>
                 </div>
-                   <Link to={`/post/${post._id}`}><div className='hover:underline text-semibold text-xl break-all text-ellipsis line-clamp-1'>{post.title}</div></Link>
+                <Link to={`/post/${post._id}`}>
+                  <div className='hover:underline text-semibold text-xl break-all text-ellipsis line-clamp-1'>
+                    {post.title}
+                  </div>
+                </Link>
                 <div className='flex items-center gap-4'>
                   <GoNorthStar size={15} fill='#ffc017' />
-                  <span className='text-gray-500 dark:text-gray-400 text-sm'>{post.createdAt.split("T")[0]}</span>
+                  <span className='text-gray-500 dark:text-gray-400 text-sm'>
+                    {post.createdAt.split("T")[0]}
+                  </span>
                 </div>
               </div>
             ))}
           </div>
-          <div className='p-6 border-t border-gray-500/10 dark:border-gray-50/50 pt-4 '>
-            <h1 className='font-semibold mb-5 flex items-center gap-2'>Recommended Topics <PiArrowBendRightDownBold size={16} className='relative top-1' />
+
+          <div className='p-6 border-t border-gray-500/10 dark:border-gray-50/50 pt-4'>
+            <h1 className='font-semibold mb-5 flex items-center gap-2'>
+              Recommended Topics <PiArrowBendRightDownBold size={16} className='relative top-1' />
             </h1>
             <div className='flex flex-wrap gap-x-3 gap-y-5 items-center'>
-              {keywords.slice(1,10).map((keyword, index) => (
-                <div className='py-1 px-4 text-sm bg-gray-200 dark:bg-gray-800 rounded-2xl w-fit' key={index}>{keyword}</div>
+              {keywords.slice(1, 10).map((keyword, index) => (
+                <div key={index} className='py-1 px-4 text-sm bg-gray-200 dark:bg-gray-800 rounded-2xl w-fit'>
+                  {keyword}
+                </div>
               ))}
             </div>
           </div>
+
           <div className='p-6 border-t border-gray-500/10 dark:border-gray-50/50'>
-            <h1 className='font-semibold mb-5'>Who to Follow
+            <h1 className='font-semibold mb-5'>
+              Who to Follow
               {posts.slice(0, 3).map((post, index) => (
                 <div key={index} className='flex items-center gap-2 my-4'>
-                  
-                  <Link to={`/${post.author.username}`}><img referrerPolicy="no-referrer" className='h-8 w-8 rounded-full' src={post.author.profilePic} alt="Profile" /></Link>
+                  <Link to={`/${post.author.username}`}>
+                    <img
+                      referrerPolicy="no-referrer"
+                      className='h-8 w-8 rounded-full'
+                      src={post.author.profilePic}
+                      alt="Profile"
+                    />
+                  </Link>
                   <div className='text-sm w-[50%]'>
                     <div className='break-all text-ellipsis line-clamp-1'>{post.author.name}</div>
-                    <div className='text-xs text-gray-500 dark:text-gray-400 break-all text-ellipsis line-clamp-1'>{post.title}</div>
+                    <div className='text-xs text-gray-500 dark:text-gray-400 break-all text-ellipsis line-clamp-1'>
+                      {post.title}
+                    </div>
                   </div>
-                  <div className='px-3 py-1 text-sm rounded-2xl border-1 border-gray-800 dark:border-gray-300'>Follow</div>
+                  <div className='px-3 py-1 text-sm rounded-2xl border-1 border-gray-800 dark:border-gray-300'>
+                    Follow
+                  </div>
                 </div>
               ))}
             </h1>

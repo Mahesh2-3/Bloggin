@@ -42,6 +42,94 @@ exports.handleFeedback = async (req, res) => {
     res.status(500).json({ message: "Failed to send feedback email." });
   }
 };
+exports.handleForgotPassword = async (req, res) => {
+  const { email } = req.body;
+
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+  try {
+    const user = await User.findOneAndUpdate(
+      { email },
+      {
+        email,
+        otp,
+        otpExpires: Date.now() + 5 * 60 * 1000, // 5 min expiry
+      },
+      { upsert: true, new: true }
+    );
+
+    await sendOtp(email, otp, "forgotPass"); // sending OTP
+    res.json({ message: "OTP sent" });
+  } catch (error) {
+    console.error("Error sending OTP:", error);
+    res.status(500).json({ message: "Failed to send OTP" });
+  }
+};
+
+exports.verifyForgotOtp = async (req, res) => {
+  const { email, otp } = req.body;
+
+  const user = await User.findOne({ email, otp });
+
+  if (!user || user.otpExpires < Date.now()) {
+    return res.status(400).json({ message: "Invalid or expired OTP" });
+  }
+
+  user.otp = null;
+  user.otpExpires = null;
+
+  await user.save();
+
+  res.json({ message: "OTP Verified successfully" });
+};
+
+exports.changePassword = async (req, res) => {
+  try {
+    const { oldPassword, newPassword } = req.body;
+    const userId = req.user.id
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not Found" });
+    }
+    if (oldPassword != "isVerified") {
+      const isMatch = await bcrypt.compare(oldPassword, user.password);
+      if (!isMatch) {
+        return res.status(401).json({ message: "Invalid password!" });
+      }
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    user.password = hashedPassword;
+    await user.save();
+
+    res.json({ message: "Password Changed Successfully" });
+  } catch (error) {
+    console.error("Error changing password:", error);
+    res.status(500).json({ message: "Server error. Please try again later." });
+  }
+};
+
+exports.resetPassword = async (req, res) => {
+  try {
+    const { email, newPassword } = req.body;
+
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    await user.save();
+
+    res.json({ message: "Password reset successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+
 exports.sendOtpToEmail = async (req, res) => {
   const { email, username } = req.body;
 
@@ -73,7 +161,7 @@ exports.sendOtpToEmail = async (req, res) => {
       { upsert: true, new: true }
     );
 
-    await sendOtp(email, otp); // sending OTP
+    await sendOtp(email, otp, "login"); // sending OTP
     res.json({ message: "OTP sent" });
   } catch (error) {
     console.error("Error sending OTP:", error);

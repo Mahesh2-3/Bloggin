@@ -7,11 +7,20 @@ import { Link } from "react-router-dom";
 import Functions from "./Functions";
 import { useNavigate } from "react-router-dom";
 
-
 const Blogcard = ({ blog }) => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const isMobile = useMediaQuery("(max-width:640px)");
   const [likeStatus, setlikeStatus] = useState(false);
+  const [likeCount, setlikeCount] = useState(blog?.likes.length || 0);
+
+  const onLikeClick = async () => {
+    const result = await Functions.handleLike(blog._id); // Await result
+    console.log(result);
+    if (result.statusText == "OK") {
+      setlikeStatus(result.data.liked); // Set correct like state from response
+      setlikeCount(result.data.likeCount); // Update like count
+    }
+  };
 
   useEffect(() => {
     const LikeStatus = async () => {
@@ -20,8 +29,6 @@ const Blogcard = ({ blog }) => {
     };
     LikeStatus();
   }, [blog]);
-
-  
 
   if (isMobile) {
     return (
@@ -67,15 +74,18 @@ const Blogcard = ({ blog }) => {
         <div className="flex items-center gap-4 text-xs my-2 text-gray-500 dark:text-gray-400">
           <GoNorthStar size={20} fill="#ffc017" />
           <span>{blog.updatedAt.split("T")[0]}</span>
-          <span className="flex gap-1 items-center">
+          <span onClick={() => onLikeClick()} className="flex cursor-pointer gap-1 items-center">
             {likeStatus ? (
               <TiHeartFullOutline size={15} fill="#ff0000" />
             ) : (
               <TiHeartOutline size={15} />
             )}
-            {blog.likes.length}
+            {likeCount}
           </span>
-          <span onClick={()=>navigate(`/post/${blog._id}`)} className="flex cursor-pointer gap-1 items-center">
+          <span
+            onClick={() => navigate(`/post/${blog._id}`)}
+            className="flex cursor-pointer gap-1 items-center"
+          >
             <FaRegComment size={15} className="scale-x-[-1]" />
             {blog.comments.length}
           </span>
@@ -116,15 +126,18 @@ const Blogcard = ({ blog }) => {
           <div className="flex items-center gap-4 text-xs my-2 text-gray-500 dark:text-gray-400">
             <GoNorthStar size={20} fill="#ffc017" />
             <span>{blog.updatedAt.split("T")[0]}</span>
-            <span className="flex gap-1 items-center">
+            <span onClick={() => onLikeClick()} className="flex gap-1 cursor-pointer items-center">
               {likeStatus ? (
                 <TiHeartFullOutline size={15} fill="#ff0000" />
               ) : (
                 <TiHeartOutline size={15} />
               )}
-              {blog.likes.length}
+              {likeCount}
             </span>
-            <span onClick={()=>navigate(`/post/${blog._id}`)} className="cursor-pointer flex gap-1 items-center">
+            <span
+              onClick={() => navigate(`/post/${blog._id}`)}
+              className="cursor-pointer flex gap-1 items-center"
+            >
               <FaRegComment size={15} className="scale-x-[-1]" />
               {blog.comments.length}
             </span>

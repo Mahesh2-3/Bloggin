@@ -1,19 +1,21 @@
 import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+
 import Navbar from "../components/Navbar";
+import Functions from "../components/Functions";
 import { UploadCloud, X } from "lucide-react";
 import { useMessage } from "../context/MessageContext";
 import useAuth from "../context/Auth";
-import { useNavigate, useParams } from "react-router-dom";
-import Functions from "../components/Functions";
 
 const CreatePost = () => {
   const navigate = useNavigate();
-  const { showMessage } = useMessage();
   const { postId } = useParams();
+  const { showMessage } = useMessage();
   const { user } = useAuth();
 
+  // -------------------- State --------------------
   const [postData, setPostData] = useState({
     title: "",
     description: "",
@@ -26,7 +28,7 @@ const CreatePost = () => {
   const [selectedTags, setSelectedTags] = useState([]);
   const [loading, setLoading] = useState({ uploading: false, deleting: false });
 
-  
+  // -------------------- Handlers --------------------
   const handleChange = (field, value) => {
     setPostData((prev) => ({ ...prev, [field]: value }));
   };
@@ -55,7 +57,6 @@ const CreatePost = () => {
 
     try {
       const res = await Functions.handleImageUpload(file, showMessage);
-
       setPostData((prev) => ({
         ...prev,
         coverImage: res.data.secure_url,
@@ -63,7 +64,7 @@ const CreatePost = () => {
       }));
       setPreview(res.data.secure_url);
       showMessage("Image uploaded successfully!", "#00d300");
-    } catch (err) {
+    } catch {
       showMessage("Image upload failed.", "#e3101e");
     } finally {
       setLoading((l) => ({ ...l, uploading: false }));
@@ -76,10 +77,7 @@ const CreatePost = () => {
     setLoading((l) => ({ ...l, deleting: true }));
 
     try {
-      const res = await Functions.handleRemoveImage(
-        postData.coverImageId,
-        showMessage
-      );
+      await Functions.handleRemoveImage(postData.coverImageId, showMessage);
       setPostData((prev) => ({
         ...prev,
         coverImage: "",
@@ -88,7 +86,6 @@ const CreatePost = () => {
       setPreview(null);
       showMessage("Image removed.", "#00d300");
 
-      // 3. Update the post on the server
       if (postId) {
         await fetch(`${import.meta.env.VITE_BASE_URL}/api/posts/${postId}`, {
           method: "PUT",
@@ -96,10 +93,7 @@ const CreatePost = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-          body: JSON.stringify({
-            coverImage: "",
-            coverImageId: "",
-          }),
+          body: JSON.stringify({ coverImage: "", coverImageId: "" }),
         });
       }
     } catch (err) {
@@ -112,14 +106,12 @@ const CreatePost = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const { title, description, content, coverImage, coverImageId } = postData;
 
     if (!title || !description || !content || !coverImage || !coverImageId) {
       showMessage("Please fill in all fields.", "#e3101e");
       return;
     }
-
     if (selectedTags.length === 0) {
       showMessage("Please select at least one tag.", "#2d2e2e");
       return;
@@ -140,7 +132,6 @@ const CreatePost = () => {
       const url = postId
         ? `${import.meta.env.VITE_BASE_URL}/api/posts/${postId}`
         : `${import.meta.env.VITE_BASE_URL}/api/posts`;
-
       const method = postId ? "PUT" : "POST";
 
       const res = await fetch(url, {
@@ -180,6 +171,7 @@ const CreatePost = () => {
     }
   };
 
+  // -------------------- Fetch Existing Post --------------------
   useEffect(() => {
     const fetchData = async () => {
       if (postId) {
@@ -189,7 +181,7 @@ const CreatePost = () => {
           description: res.data.description,
           content: res.data.content,
           coverImage: res.data.coverImage,
-          coverImageId: res.data.coverImageId, // Since it's already uploaded
+          coverImageId: res.data.coverImageId,
         });
         setPreview(res.data.coverImage);
         setSelectedTags(res.data.tags || []);
@@ -198,6 +190,7 @@ const CreatePost = () => {
     fetchData();
   }, [postId]);
 
+  // -------------------- Quill Modules --------------------
   const modules = {
     toolbar: [
       ["bold", "italic", "blockquote", "link"],
@@ -207,13 +200,16 @@ const CreatePost = () => {
     ],
   };
 
+  // -------------------- JSX --------------------
   return (
-    <div className="min-h-screen pt-[70px] bg-white dark:bg-[#121212] text-gray-900 dark:text-gray-100 transition-colors duration-300">
+    <div className="min-h-screen pt-[70px] bg-white dark:bg-[#000000] text-gray-900 dark:text-gray-100 transition-colors duration-300">
       <Navbar />
+
       <form
         onSubmit={handleSubmit}
         className="max-w-4xl mx-auto px-4 py-8 space-y-6"
       >
+        {/* Title */}
         <input
           type="text"
           value={postData.title}
@@ -222,6 +218,7 @@ const CreatePost = () => {
           className="w-full text-4xl font-bold bg-transparent border-b outline-none"
         />
 
+        {/* Description */}
         <textarea
           value={postData.description}
           onChange={(e) => handleChange("description", e.target.value)}
@@ -252,11 +249,11 @@ const CreatePost = () => {
             )}
             <label
               className={`flex items-center gap-2 cursor-pointer px-4 py-2 rounded-md text-sm transition
-              ${
-                postData.coverImage
-                  ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-blue-600 text-white hover:bg-blue-700"
-              }`}
+                ${
+                  postData.coverImage
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-blue-600 text-white hover:bg-blue-700"
+                }`}
             >
               <UploadCloud size={18} />
               <span>Choose Image</span>
@@ -273,22 +270,21 @@ const CreatePost = () => {
             <p className="text-sm text-gray-400">Uploading Image...</p>
           )}
           {loading.deleting && (
-            <p className="text-sm text-red-400">deleting Image...</p>
+            <p className="text-sm text-red-400">Deleting Image...</p>
           )}
         </div>
 
+        {/* Content */}
         <div>
           <label className="block font-medium mb-2">Content</label>
           <div className="bg-white h-[300px] overflow-y-auto text-black dark:text-white dark:bg-[#1e1e1e] rounded-md p-2">
-            <div className="min-w-full">
-              <ReactQuill
-                theme="snow"
-                value={postData.content}
-                onChange={(value) => handleChange("content", value)}
-                placeholder="Write your story here..."
-                modules={modules}
-              />
-            </div>
+            <ReactQuill
+              theme="snow"
+              value={postData.content}
+              onChange={(value) => handleChange("content", value)}
+              placeholder="Write your story here..."
+              modules={modules}
+            />
           </div>
         </div>
 
@@ -317,6 +313,7 @@ const CreatePost = () => {
           </div>
         </div>
 
+        {/* Submit */}
         <button
           type="submit"
           className="bg-black dark:bg-white px-6 py-2 rounded text-white dark:text-black transition"

@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import SplitText from "../animations/Splittext";
 import { Link, useNavigate } from "react-router-dom";
-import UseAuth from "../context/Auth";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
+import SplitText from "../animations/Splittext";
+import UseAuth from "../context/Auth";
 
 const Login = () => {
   const [toast, setToast] = useState({ show: false, message: "" });
   const [showPassword, setShowPassword] = useState(false);
-  const { login,logout } = UseAuth();
+  const { login, logout } = UseAuth();
   const navigate = useNavigate();
 
   const {
@@ -18,21 +18,26 @@ const Login = () => {
     reset,
   } = useForm();
 
+  /** Show toast for 3 seconds */
   const showToast = (message) => {
     setToast({ show: true, message });
     setTimeout(() => setToast({ show: false, message: "" }), 3000);
   };
 
+  /** Handle form submission */
   const onSubmit = async (data) => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_BASE_URL}/api/auth/email/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          identifier: data.identifier,
-          password: data.password,
-        }),
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_BASE_URL}/api/auth/email/login`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            identifier: data.identifier,
+            password: data.password,
+          }),
+        }
+      );
 
       const result = await res.json();
 
@@ -40,35 +45,38 @@ const Login = () => {
         showToast(result.message || "Login failed");
         return;
       }
-      logout()
+
+      logout();
       localStorage.setItem("token", result.token);
       login(result.user);
       navigate("/home");
       showToast("Login successful");
       reset();
-    } catch (err) {
+    } catch {
       showToast("Server error");
     }
   };
 
+  /** Handle form validation errors */
   const onError = (formErrors) => {
     const firstError = Object.values(formErrors)[0];
-    if (firstError?.message) {
-      showToast(firstError.message);
-    }
+    if (firstError?.message) showToast(firstError.message);
   };
 
+  /** Trigger Google OAuth login */
   const googleLogin = () => {
     window.location.href = `${import.meta.env.VITE_BASE_URL}/api/auth/google/login`;
   };
 
   return (
     <div className="min-h-screen bg-black flex xl:gap-30 gap-10 xl:flex-row flex-col items-center justify-center relative px-4">
+      {/* Background */}
       <div className="absolute inset-0 h-full w-full px-5 py-24 [background:radial-gradient(125%_125%_at_50%_10%,#000_40%,#63e_100%)]"></div>
 
+      {/* Heading Animation */}
       <SplitText
-        text={`Welcome Back!`}
-        className=" md:absolute relative top-20 md:text-[126px] text-[100px] select-none font-semibold font-main text-white text-start"
+        text="Welcome Back!"
+        className="md:absolute relative top-20 md:text-[126px] text-[100px] select-none font-semibold font-main text-white text-start"
         delay={100}
         duration={0.6}
         ease="power3.out"
@@ -80,15 +88,20 @@ const Login = () => {
         textAlign="center"
       />
 
+      {/* Toast Notification */}
       {toast.show && (
         <div className="fixed top-4 right-4 bg-red-500 text-white px-6 py-3 rounded-md shadow-lg z-50 animate-fade-in-out">
           {toast.message}
         </div>
       )}
 
+      {/* Login Card */}
       <div className="glass-box w-full max-w-md px-8 py-8 rounded-xl shadow-lg backdrop-blur-sm bg-white/10 border border-white/20 z-10">
-        <h2 className="text-3xl font-semibold text-center text-white mb-8">Login</h2>
+        <h2 className="text-3xl font-semibold text-center text-white mb-8">
+          Login
+        </h2>
 
+        {/* Google Login */}
         <button
           onClick={googleLogin}
           className="w-full bg-white flex items-center justify-center gap-2 text-black py-2 h-[50px] rounded-md font-medium mb-6 hover:bg-gray-200 transition"
@@ -97,13 +110,19 @@ const Login = () => {
           Continue with Google
         </button>
 
+        {/* Divider */}
         <div className="flex items-center justify-center mb-6">
           <div className="border-t border-gray-400 flex-grow mr-2"></div>
           <span className="text-white text-sm">or</span>
           <div className="border-t border-gray-400 flex-grow ml-2"></div>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit, onError)} className="space-y-6 text-white">
+        {/* Form */}
+        <form
+          onSubmit={handleSubmit(onSubmit, onError)}
+          className="space-y-6 text-white"
+        >
+          {/* Identifier Field */}
           <div>
             <label className="block mb-1 text-sm">Username or Email</label>
             <input
@@ -116,6 +135,7 @@ const Login = () => {
             />
           </div>
 
+          {/* Password Field */}
           <div>
             <label className="block mb-1 text-sm">Password</label>
             <div className="relative">
@@ -136,16 +156,26 @@ const Login = () => {
                 className="absolute top-1/2 right-3 transform -translate-y-1/2 text-white"
                 onClick={() => setShowPassword(!showPassword)}
               >
-                {showPassword ? <MdVisibilityOff size={20} /> : <MdVisibility size={20} />}
+                {showPassword ? (
+                  <MdVisibilityOff size={20} />
+                ) : (
+                  <MdVisibility size={20} />
+                )}
               </button>
             </div>
+
+            {/* Forgot Password Link */}
             <div className="text-right mt-1">
-              <Link to="/forgot-password" className="text-sm text-blue-300 hover:text-blue-400 underline">
+              <Link
+                to="/forgot-password"
+                className="text-sm text-blue-300 hover:text-blue-400 underline"
+              >
                 Forgot Password?
               </Link>
             </div>
           </div>
 
+          {/* Submit Button */}
           <button
             type="submit"
             className="w-full bg-blue-600 hover:bg-blue-700 transition-all py-2 rounded-md font-medium"
@@ -154,9 +184,13 @@ const Login = () => {
           </button>
         </form>
 
+        {/* Sign Up Link */}
         <div className="w-full mt-6 text-white text-center text-sm">
           Don't have an account?
-          <Link to="/signup" className="ml-2 text-green-400 underline hover:text-green-300">
+          <Link
+            to="/signup"
+            className="ml-2 text-green-400 underline hover:text-green-300"
+          >
             Sign Up
           </Link>
         </div>

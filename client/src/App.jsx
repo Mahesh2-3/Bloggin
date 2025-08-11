@@ -20,8 +20,8 @@ import ProtectedRoute from "./routes/ProtectedRoutes";
 import CreatePost from './pages/Editor';
 import PostPage from './pages/[post]';
 import Search from './pages/Search';
-import Settings from './pages/Settings';
 import Help from './pages/Help';
+import ForgotPassword from './pages/ForgotPassword';
 
 const AppRoutes = () => {
   const { theme } = useTheme();
@@ -40,6 +40,7 @@ const AppRoutes = () => {
         {/* Public Routes */}
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/google-auth" element={<GoogleAuthHandler />} />
 
@@ -54,7 +55,6 @@ const AppRoutes = () => {
         />
           <Route path="/edit" element={<ProtectedRoute><CreatePost /></ProtectedRoute>} />
           <Route path="/help" element={<ProtectedRoute><Help /></ProtectedRoute>} />
-          <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
           <Route path="/profile/edit" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/edit/:postId" element={<ProtectedRoute><CreatePost /></ProtectedRoute>} />
           <Route path="/:username" element={<ProtectedRoute><UserPage /></ProtectedRoute>} />

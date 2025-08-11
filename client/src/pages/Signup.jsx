@@ -2,17 +2,17 @@ import React, { useState } from "react";
 import SplitText from "../animations/Splittext";
 import { useNavigate } from "react-router-dom";
 import UseAuth from "../context/Auth";
-import { MdOutlineEmail } from "react-icons/md";
+import { MdOutlineEmail, MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { TbArrowBarToLeft } from "react-icons/tb";
-import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 
 const Signup = () => {
   const { login, logout } = UseAuth();
   const navigate = useNavigate();
 
+  // State
   const [toast, setToast] = useState({ show: false, message: "" });
   const [loading, setLoading] = useState(false);
-  const [step, setStep] = useState("null"); // 'email' or 'otp'
+  const [step, setStep] = useState("null"); // "email" | "otp" | "null"
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [name, setName] = useState("");
@@ -20,27 +20,26 @@ const Signup = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
+  // Helpers
   const showToast = (message) => {
     setToast({ show: true, message });
     setTimeout(() => setToast({ show: false, message: "" }), 3000);
   };
 
+  // API Calls
   const sendOtp = async () => {
     if (!name.trim() || !/^[a-zA-Z0-9\s]+$/.test(name)) {
       showToast("Please enter a valid name (letters only)");
       return;
     }
-
     if (!username.trim() || !/^[a-z0-9_-]+$/.test(username)) {
       showToast("Username must be lowercase and can include - or _");
       return;
     }
-
     if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
       showToast("Please enter a valid email");
       return;
     }
-
     if (!password.trim()) {
       showToast("Password is required");
       return;
@@ -56,17 +55,14 @@ const Signup = () => {
           body: JSON.stringify({ email, username }),
         }
       );
-
       const result = await res.json();
-
       if (!res.ok) {
         showToast(result.message || "Failed to send OTP");
         return;
       }
-
       showToast("OTP sent to email");
       setStep("otp");
-    } catch (err) {
+    } catch {
       showToast("Error sending OTP");
     } finally {
       setLoading(false);
@@ -78,7 +74,6 @@ const Signup = () => {
       showToast("Enter the OTP sent to your email");
       return;
     }
-
     setLoading(true);
     try {
       const res = await fetch(
@@ -89,9 +84,7 @@ const Signup = () => {
           body: JSON.stringify({ email, otp, password, name, username }),
         }
       );
-
       const result = await res.json();
-
       if (!res.ok) {
         showToast(result.message || "OTP verification failed");
         return;
@@ -109,11 +102,10 @@ const Signup = () => {
   };
 
   const googleLogin = () => {
-    window.location.href = `${
-      import.meta.env.VITE_BASE_URL
-    }/api/auth/google/signup`;
+    window.location.href = `${import.meta.env.VITE_BASE_URL}/api/auth/google/signup`;
   };
 
+  // Render Step UI
   const renderStep = () => {
     if (step === "email") {
       return (
@@ -151,14 +143,9 @@ const Signup = () => {
               className="absolute right-3 top-[22px] translate-y-[-50%] cursor-pointer text-gray-400"
               onClick={() => setShowPassword((prev) => !prev)}
             >
-              {showPassword ? (
-                <MdVisibilityOff size={20} />
-              ) : (
-                <MdVisibility size={20} />
-              )}
+              {showPassword ? <MdVisibilityOff size={20} /> : <MdVisibility size={20} />}
             </div>
           </div>
-
           <button
             onClick={sendOtp}
             className="primary-btn bg-blue-600 hover:bg-blue-700"
@@ -169,7 +156,6 @@ const Signup = () => {
         </>
       );
     }
-
     if (step === "otp") {
       return (
         <>
@@ -190,7 +176,6 @@ const Signup = () => {
         </>
       );
     }
-
     return null;
   };
 
@@ -230,8 +215,6 @@ const Signup = () => {
               <img src="/google.png" className="scale-90" alt="google" />
               Continue with Google
             </button>
-
-            {/* Divider with "or" */}
             <div className="flex items-center gap-2 text-gray-300 my-4">
               <hr className="flex-1 border-gray-500" />
               <span className="text-sm">or</span>
@@ -243,9 +226,7 @@ const Signup = () => {
         <TbArrowBarToLeft
           onClick={() => setStep("null")}
           size={20}
-          className={`absolute top-4 left-4 cursor-pointer ${
-            step === "null" && "hidden"
-          }`}
+          className={`absolute top-4 left-4 cursor-pointer ${step === "null" && "hidden"}`}
         />
 
         {step === "email" || step === "otp" ? (
@@ -253,14 +234,14 @@ const Signup = () => {
         ) : (
           <button
             onClick={() => {
-              setStep("email")
-              setEmail('')
-              setPassword('')
-              setShowPassword('')
-              setName('')
-              setUsername('')
-              setOtp('')
-              }}
+              setStep("email");
+              setEmail("");
+              setPassword("");
+              setShowPassword("");
+              setName("");
+              setUsername("");
+              setOtp("");
+            }}
             className="w-full bg-white flex items-center justify-center gap-2 text-black py-2 h-[50px] rounded-md font-medium mb-4 hover:bg-gray-200 transition"
           >
             <MdOutlineEmail size={30} />
@@ -268,7 +249,6 @@ const Signup = () => {
           </button>
         )}
 
-        {/* Already have an account? */}
         <div className="mt-6 text-center text-sm text-gray-300">
           Already have an account?{" "}
           <span
@@ -282,22 +262,9 @@ const Signup = () => {
 
       <style jsx>{`
         @keyframes fade-in-out {
-          0% {
-            opacity: 0;
-            transform: translateY(-20px);
-          }
-          10% {
-            opacity: 1;
-            transform: translateY(0);
-          }
-          90% {
-            opacity: 1;
-            transform: translateY(0);
-          }
-          100% {
-            opacity: 0;
-            transform: translateY(-20px);
-          }
+          0% { opacity: 0; transform: translateY(-20px); }
+          10%, 90% { opacity: 1; transform: translateY(0); }
+          100% { opacity: 0; transform: translateY(-20px); }
         }
         .animate-fade-in-out {
           animation: fade-in-out 3s ease-in-out forwards;
