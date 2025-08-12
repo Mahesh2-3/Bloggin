@@ -1,6 +1,6 @@
 const Like = require('../models/Like');
 const Post = require('../models/Post');
-
+const User = require("../models/User")
 exports.toggleLike = async (req, res) => {
   try {
     const { postId } = req.params;
@@ -8,8 +8,14 @@ exports.toggleLike = async (req, res) => {
 
     const existingLike = await Like.findOne({ postId, userId });
     const post = await Post.findById(postId);
+    const user = await User.findById(userId);
 
     if (!post) return res.status(404).json({ message: 'Post not found' });
+
+    // Ensure likedTags exists
+    if (!user.likedTags || !(user.likedTags instanceof Map)) {
+      user.likedTags = new Map(predefinedTags.map(tag => [tag, 0]));
+    }
 
     if (existingLike) {
       // Remove like document
@@ -18,6 +24,16 @@ exports.toggleLike = async (req, res) => {
       // Remove userId from post.likes
       post.likes = post.likes.filter(id => id.toString() !== userId);
       await post.save();
+
+      // ✅ Decrease tag counts
+      if (Array.isArray(post.tags)) {
+        post.tags.forEach(tag => {
+          if (user.likedTags.has(tag) && user.likedTags.get(tag) > 0) {
+            user.likedTags.set(tag, user.likedTags.get(tag) - 1);
+          }
+        });
+      }
+      await user.save();
 
       return res.status(200).json({
         message: 'Post unliked',
@@ -35,6 +51,16 @@ exports.toggleLike = async (req, res) => {
       post.likes.push(userId);
       await post.save();
     }
+
+    // ✅ Increase tag counts
+    if (Array.isArray(post.tags)) {
+      post.tags.forEach(tag => {
+        if (user.likedTags.has(tag)) {
+          user.likedTags.set(tag, user.likedTags.get(tag) + 1);
+        }
+      });
+    }
+    await user.save();
 
     res.status(200).json({
       message: 'Post liked',

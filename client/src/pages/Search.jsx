@@ -43,10 +43,10 @@ const Search = () => {
   );
 
   return (
-    <div className="min-h-screen pt-[70px] bg-white dark:bg-black text-black dark:text-white">
+    <div className="min-h-screen pt-[70px] hide-scrollbar bg-white dark:bg-black text-black dark:text-white">
       <Navbar />
 
-      <div className="md:w-[700px] w-full flex flex-col mx-auto px-4">
+      <div className="md:w-[700px] w-full hide-scrollbar flex flex-col mx-auto px-4">
         {/* Tabs */}
         {searchParam.trim() !== "" && (
           <div className="flex gap-4 border-b border-gray-500/30 dark:border-gray-50/50 pt-6 mb-6">

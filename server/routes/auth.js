@@ -38,28 +38,23 @@ router.get(
 
 
 // GOOGLE CALLBACK ROUTE
-router.get(
-  "/google/callback",
-  passport.authenticate("google", {
-    failureRedirect: `${process.env.CLIENT_URL}/login?error=google`,
-  }),
-  (req, res) => {
-    const user = req.user;
-
-    // Create JWT token
-    const token  = jwt.sign(
+router.get("/google/callback", (req, res, next) => {
+  passport.authenticate("google", (err, user, info) => {
+    if (err) return next(err);
+    if (!user) {
+      // info.message contains "User already exists"
+      return res.redirect(`${process.env.CLIENT_URL}/login?error=${encodeURIComponent(info.message)}`);
+    }
+    // If success:
+    const token = jwt.sign(
       { id: user._id, username: user.username, email: user.email },
       process.env.JWT_SECRET,
       { expiresIn: "7d" }
     );
+    res.redirect(`${process.env.CLIENT_URL}/google-auth?token=${token}&userId=${user._id}&message=${info.message}`);
+  })(req, res, next);
+});
 
-    // Instead of redirecting directly, redirect with token in query
-    res.redirect(
-  `${process.env.CLIENT_URL}/google-auth?token=${token}&userId=${user._id}`
-);
-
-  }
-);
 
 
 // EMAIL OTP ROUTES

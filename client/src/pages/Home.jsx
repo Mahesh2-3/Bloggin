@@ -1,12 +1,12 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
-import { Link } from 'react-router-dom';
-import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { Link } from "react-router-dom";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { GoNorthStar } from "react-icons/go";
 import { PiArrowBendRightDownBold } from "react-icons/pi";
-import useAuth from '../context/Auth';
-import Blogcard from '../components/Blogcard';
-import Functions from '../components/Functions';
+import useAuth from "../context/Auth";
+import Blogcard from "../components/Blogcard";
+import Functions from "../components/Functions";
 
 const Home = () => {
   const { user, login, logout } = useAuth();
@@ -14,8 +14,12 @@ const Home = () => {
   const [presentKey, setPresentKey] = useState("All");
 
   // Filter posts based on tag or show all
-  const filteredPosts = presentKey === "All" ? posts : posts.filter(post => post.tags.includes(presentKey));
-  
+  const filteredPosts = (
+    presentKey === "All"
+      ? posts
+      : posts.filter((post) => post.tags.includes(presentKey))
+  ).filter((post) => !post.likes.includes(user?._id));
+
   // Tags for filtering
   const keywords = ["All", ...Functions.predefinedTags];
 
@@ -35,11 +39,11 @@ const Home = () => {
   };
 
   const scrollLeft = () => {
-    scrollRef.current.scrollBy({ left: -scrollByAmount, behavior: 'smooth' });
+    scrollRef.current.scrollBy({ left: -scrollByAmount, behavior: "smooth" });
   };
 
   const scrollRight = () => {
-    scrollRef.current.scrollBy({ left: scrollByAmount, behavior: 'smooth' });
+    scrollRef.current.scrollBy({ left: scrollByAmount, behavior: "smooth" });
   };
 
   // Fetch posts and setup scroll event on mount
@@ -52,6 +56,8 @@ const Home = () => {
         });
 
         if (!res.ok) throw new Error("Failed to fetch posts");
+        const response = await Functions.fetchUser(user?._id);
+        login(response.data);
 
         const data = await res.json();
         setPosts(data);
@@ -63,21 +69,21 @@ const Home = () => {
     fetchPosts();
 
     const el = scrollRef.current;
-    if (el) el.addEventListener('scroll', handleScroll);
+    if (el) el.addEventListener("scroll", handleScroll);
 
     handleScroll(); // Initial check
 
     return () => {
-      if (el) el.removeEventListener('scroll', handleScroll);
+      if (el) el.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
   return (
-    <div className='w-full pt-[70px] bg-white dark:bg-black text-black dark:text-white'>
+    <div className="w-full min-h-screen pt-[70px] bg-white dark:bg-black text-black dark:text-white">
       <Navbar />
 
-      <div className='lg:w-[60%] w-full flex mx-auto px-4'>
-        <div className='sm:w-[65%] w-full border-r-1 pt-10 border-gray-500/30 dark:border-gray-50/50 relative'>
+      <div className="lg:w-[60%] w-full flex mx-auto px-4">
+        <div className="sm:w-[65%] w-full border-r-1 pt-10 border-gray-500/30 dark:border-gray-50/50 relative">
           {showLeftArrow && (
             <button
               onClick={scrollLeft}
@@ -88,7 +94,7 @@ const Home = () => {
           )}
 
           <div
-            className='flex gap-5 text-sm border-b-1 pb-2 border-gray-500/30 dark:border-gray-50/50 overflow-x-scroll hide-scrollbar scroll-smooth px-6'
+            className="flex gap-5 text-sm border-b-1 pb-2 border-gray-500/30 dark:border-gray-50/50 overflow-x-scroll hide-scrollbar scroll-smooth px-6"
             ref={scrollRef}
           >
             {keywords.map((keyword, index) => (
@@ -117,43 +123,59 @@ const Home = () => {
 
           <div>
             {filteredPosts.length > 0 ? (
-              filteredPosts.map(post => <Blogcard key={post._id} blog={post} />)
+              filteredPosts
+                // Sort posts based on highest likedTags value in user's data
+                .sort((a, b) => {
+                  const getHighestLikedTagValue = (tags) => {
+                    if (!tags || !Array.isArray(tags)) return 0;
+                    return Math.max(
+                      ...tags.map((tag) => user?.likedTags?.[tag] || 0)
+                    );
+                  };
+
+                  return (
+                    getHighestLikedTagValue(b.tags) -
+                    getHighestLikedTagValue(a.tags)
+                  );
+                })
+                .map((post) => <Blogcard key={post._id} blog={post} />)
             ) : (
-              <div className='mt-10 mx-auto w-fit text-gray-700 dark:text-gray-300'>
+              <div className="mt-10 mx-auto w-fit text-gray-700 dark:text-gray-300">
                 No Posts Found
               </div>
             )}
           </div>
         </div>
 
-        <div className='w-[35%] sm:block hidden'>
-          <div className='flex p-6 flex-col gap-6'>
-            <h1 className='font-semibold flex items-center gap-2'>
-              Best Picks <PiArrowBendRightDownBold size={16} className='relative top-1' />
+        <div className="w-[35%] sm:block hidden">
+          <div className="flex p-6 flex-col gap-6">
+            <h1 className="font-semibold flex items-center gap-2">
+              Best Picks{" "}
+              <PiArrowBendRightDownBold size={16} className="relative top-1" />
             </h1>
             {posts.slice(0, 3).map((post, index) => (
-              <div key={index} className='flex flex-col gap-2'>
-                <div className='flex items-center gap-2'>
+              <div key={index} className="flex flex-col gap-2">
+                <div className="flex items-center gap-2">
                   <img
                     referrerPolicy="no-referrer"
-                    className='h-8 w-8 rounded-full'
+                    className="h-8 w-8 rounded-full"
                     src={post.author.profilePic}
                     alt="Profile"
                   />
                   <Link to={`/${post.author.username}`}>
-                    <div className='text-gray-500 cursor-pointer hover:underline dark:text-gray-400 text-sm'>
+                    <div className="text-gray-500 cursor-pointer hover:underline dark:text-gray-400 text-sm">
                       {post.author.name}
                     </div>
                   </Link>
                 </div>
                 <Link to={`/post/${post._id}`}>
-                  <div className='hover:underline text-semibold text-xl break-all text-ellipsis line-clamp-1'>
+                  <div className="hover:underline text-semibold text-xl break-all text-ellipsis line-clamp-1">
                     {post.title}
                   </div>
                 </Link>
-                <div className='flex items-center gap-4'>
-                  <GoNorthStar size={15} fill='#ffc017' />
-                  <span className='text-gray-500 dark:text-gray-400 text-sm'>
+                <div className="flex items-center gap-4">
+                  <GoNorthStar size={15} fill="#ffc017" />
+                  <span className="text-gray-500 dark:text-gray-400 text-sm">
                     {post.createdAt.split("T")[0]}
                   </span>
                 </div>
@@ -161,39 +183,45 @@ const Home = () => {
             ))}
           </div>
 
-          <div className='p-6 border-t border-gray-500/10 dark:border-gray-50/50 pt-4'>
-            <h1 className='font-semibold mb-5 flex items-center gap-2'>
-              Recommended Topics <PiArrowBendRightDownBold size={16} className='relative top-1' />
+          <div className="p-6 border-t border-gray-500/10 dark:border-gray-50/50 pt-4">
+            <h1 className="font-semibold mb-5 flex items-center gap-2">
+              Recommended Topics{" "}
+              <PiArrowBendRightDownBold size={16} className="relative top-1" />
             </h1>
-            <div className='flex flex-wrap gap-x-3 gap-y-5 items-center'>
+            <div className="flex flex-wrap gap-x-3 gap-y-5 items-center">
               {keywords.slice(1, 10).map((keyword, index) => (
-                <div key={index} className='py-1 px-4 text-sm bg-gray-200 dark:bg-gray-800 rounded-2xl w-fit'>
+                <div
+                  key={index}
+                  className="py-1 px-4 text-sm bg-gray-200 dark:bg-gray-800 rounded-2xl w-fit"
+                >
                   {keyword}
                 </div>
               ))}
             </div>
           </div>
 
-          <div className='p-6 border-t border-gray-500/10 dark:border-gray-50/50'>
-            <h1 className='font-semibold mb-5'>
+          <div className="p-6 border-t border-gray-500/10 dark:border-gray-50/50">
+            <h1 className="font-semibold mb-5">
               Who to Follow
               {posts.slice(0, 3).map((post, index) => (
-                <div key={index} className='flex items-center gap-2 my-4'>
+                <div key={index} className="flex items-center gap-2 my-4">
                   <Link to={`/${post.author.username}`}>
                     <img
                       referrerPolicy="no-referrer"
-                      className='h-8 w-8 rounded-full'
+                      className="h-8 w-8 rounded-full"
                       src={post.author.profilePic}
                       alt="Profile"
                     />
                   </Link>
-                  <div className='text-sm w-[50%]'>
-                    <div className='break-all text-ellipsis line-clamp-1'>{post.author.name}</div>
-                    <div className='text-xs text-gray-500 dark:text-gray-400 break-all text-ellipsis line-clamp-1'>
+                  <div className="text-sm w-[50%]">
+                    <div className="break-all text-ellipsis line-clamp-1">
+                      {post.author.name}
+                    </div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400 break-all text-ellipsis line-clamp-1">
                       {post.title}
                     </div>
                   </div>
-                  <div className='px-3 py-1 text-sm rounded-2xl border-1 border-gray-800 dark:border-gray-300'>
+                  <div className="px-3 py-1 text-sm rounded-2xl border-1 border-gray-800 dark:border-gray-300">
                     Follow
                   </div>
                 </div>

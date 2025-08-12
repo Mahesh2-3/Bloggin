@@ -272,7 +272,7 @@ const Profile = () => {
   };
 
   return (
-    <div className="w-full pt-[50px] font-normal bg-white dark:bg-black text-black dark:text-white min-h-screen">
+    <div className="w-full py-[50px] font-normal bg-white dark:bg-black text-black dark:text-white min-h-screen">
       <Navbar />
 
       {/* Delete Confirmation Box */}

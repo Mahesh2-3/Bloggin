@@ -2,6 +2,7 @@ const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
+const sendGeneratedPassword = require("../utils/sendPassword")
 
 // Google OAuth Strategy
 passport.use(
@@ -24,10 +25,8 @@ passport.use(
           const username = profile.displayName
             .toLowerCase()
             .replace(/\s+/g, "");
-          const hashedPassword = await bcrypt.hash(
-            Math.random().toString(36).slice(-8),
-            10
-          );
+          const plainPassword = Math.random().toString(36).slice(-8); // store before hashing
+          const hashedPassword = await bcrypt.hash(plainPassword, 10);
 
           user = await User.create({
             username,
@@ -37,7 +36,10 @@ passport.use(
             profilePic: profile.photos[0]?.value || "",
           });
 
-          return done(null, user);
+          // Send email with generated password
+          await sendGeneratedPassword(user.email, plainPassword);
+
+          return done(null, user, {message : "newAccount"});
         } catch (error) {
           return done(error, null);
         }
@@ -55,8 +57,6 @@ passport.use(
     }
   )
 );
-
-
 
 // Required for session support
 passport.serializeUser((user, done) => {

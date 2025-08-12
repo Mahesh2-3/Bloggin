@@ -6,16 +6,19 @@ import { TiHeartFullOutline, TiHeartOutline } from "react-icons/ti";
 import { Link } from "react-router-dom";
 import Functions from "./Functions";
 import { useNavigate } from "react-router-dom";
+import useAuth from "../context/Auth";
 
 const Blogcard = ({ blog }) => {
   const navigate = useNavigate();
+  const { user, login, logout } = useAuth();
+
   const isMobile = useMediaQuery("(max-width:640px)");
   const [likeStatus, setlikeStatus] = useState(false);
   const [likeCount, setlikeCount] = useState(blog?.likes.length || 0);
 
   const onLikeClick = async () => {
+    console.log(user)
     const result = await Functions.handleLike(blog._id); // Await result
-    console.log(result);
     if (result.statusText == "OK") {
       setlikeStatus(result.data.liked); // Set correct like state from response
       setlikeCount(result.data.likeCount); // Update like count
@@ -34,7 +37,7 @@ const Blogcard = ({ blog }) => {
     return (
       <div
         key={blog._id}
-        className="border-b flex flex-col items-start px-2 gap-2 border-gray-500/70 dark:border-gray-50/50 py-4"
+        className="border-b flex flex-col items-start px-2 gap-2 py-4"
       >
         <div className="flex items-center gap-3 mb-2">
           <img
@@ -74,7 +77,10 @@ const Blogcard = ({ blog }) => {
         <div className="flex items-center gap-4 text-xs my-2 text-gray-500 dark:text-gray-400">
           <GoNorthStar size={20} fill="#ffc017" />
           <span>{blog.updatedAt.split("T")[0]}</span>
-          <span onClick={() => onLikeClick()} className="flex cursor-pointer gap-1 items-center">
+          <span
+            onClick={() => onLikeClick()}
+            className="flex cursor-pointer gap-1 items-center"
+          >
             {likeStatus ? (
               <TiHeartFullOutline size={15} fill="#ff0000" />
             ) : (
@@ -126,7 +132,10 @@ const Blogcard = ({ blog }) => {
           <div className="flex items-center gap-4 text-xs my-2 text-gray-500 dark:text-gray-400">
             <GoNorthStar size={20} fill="#ffc017" />
             <span>{blog.updatedAt.split("T")[0]}</span>
-            <span onClick={() => onLikeClick()} className="flex gap-1 cursor-pointer items-center">
+            <span
+              onClick={() => onLikeClick()}
+              className="flex gap-1 cursor-pointer items-center"
+            >
               {likeStatus ? (
                 <TiHeartFullOutline size={15} fill="#ff0000" />
               ) : (

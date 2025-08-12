@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import SplitText from "../animations/Splittext";
 import UseAuth from "../context/Auth";
+import { useEffect } from "react";
+import { useMessage } from "../context/MessageContext";
 
 const Login = () => {
-  const [toast, setToast] = useState({ show: false, message: "" });
+  const location = useLocation();
+  const { showMessage } = useMessage();
   const [showPassword, setShowPassword] = useState(false);
   const { login, logout } = UseAuth();
   const navigate = useNavigate();
@@ -18,11 +21,6 @@ const Login = () => {
     reset,
   } = useForm();
 
-  /** Show toast for 3 seconds */
-  const showToast = (message) => {
-    setToast({ show: true, message });
-    setTimeout(() => setToast({ show: false, message: "" }), 3000);
-  };
 
   /** Handle form submission */
   const onSubmit = async (data) => {
@@ -42,7 +40,7 @@ const Login = () => {
       const result = await res.json();
 
       if (!res.ok) {
-        showToast(result.message || "Login failed");
+        showMessage("Login Failed","#ff0000")
         return;
       }
 
@@ -50,22 +48,32 @@ const Login = () => {
       localStorage.setItem("token", result.token);
       login(result.user);
       navigate("/home");
-      showToast("Login successful");
+      showMessage("Login successful","#00b300");
       reset();
     } catch {
-      showToast("Server error");
+      showMessage("Server error","#ff0000");
     }
   };
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const errorMsg = params.get("error");
+    if (errorMsg) {
+      showMessage(errorMsg, "#ff0000");
+    }
+  }, [location.search]);
 
   /** Handle form validation errors */
   const onError = (formErrors) => {
     const firstError = Object.values(formErrors)[0];
-    if (firstError?.message) showToast(firstError.message);
+    if (firstError?.message) showMessage(firstError.message,"#ff0000");
   };
 
   /** Trigger Google OAuth login */
   const googleLogin = () => {
-    window.location.href = `${import.meta.env.VITE_BASE_URL}/api/auth/google/login`;
+    window.location.href = `${
+      import.meta.env.VITE_BASE_URL
+    }/api/auth/google/login`;
   };
 
   return (
@@ -87,13 +95,6 @@ const Login = () => {
         rootMargin="-100px"
         textAlign="center"
       />
-
-      {/* Toast Notification */}
-      {toast.show && (
-        <div className="fixed top-4 right-4 bg-red-500 text-white px-6 py-3 rounded-md shadow-lg z-50 animate-fade-in-out">
-          {toast.message}
-        </div>
-      )}
 
       {/* Login Card */}
       <div className="glass-box w-full max-w-md px-8 py-8 rounded-xl shadow-lg backdrop-blur-sm bg-white/10 border border-white/20 z-10">
