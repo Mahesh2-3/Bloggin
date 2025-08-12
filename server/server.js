@@ -16,6 +16,14 @@ app.use(cors({
 }));
 app.use(express.json());
 
+app.use(cors({
+  origin: [
+    process.env.CLIENT_URL,
+  ],
+  credentials: true,
+}));
+
+
 app.use(session({
   secret: "keyboard cat",
   resave: false,

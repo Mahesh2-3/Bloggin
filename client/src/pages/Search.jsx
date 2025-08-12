@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar";
 import { useSearchParam } from "../context/Searchcontext";
 import Blogcard from "../components/Blogcard";
 import Functions from "../components/Functions";
+import { Link } from "react-router-dom";
 
 const Search = () => {
   const { searchParam } = useSearchParam();
@@ -103,7 +104,7 @@ const Search = () => {
                       className="w-10 h-10 rounded-full"
                     />
                     <div>
-                      <p className="font-semibold">{u.name}</p>
+                      <Link to={`/${u.username}`}><p className="font-semibold hover:underline">{u.name}</p></Link>
                       <p className="text-sm text-gray-500">@{u.username}</p>
                     </div>
                   </div>

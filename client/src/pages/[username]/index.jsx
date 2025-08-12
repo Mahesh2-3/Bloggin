@@ -236,7 +236,7 @@ const UserPage = () => {
                     className="w-8 h-8 rounded-full object-cover"
                   />
                   <div>
-                    <p className="font-medium">{follower.name}</p>
+                    <Link to={`/${follower.username}`}><p className="font-medium hover:underline">{follower.name}</p></Link>
                     <p className="text-gray-500 dark:text-gray-400">
                       @{follower.username}
                     </p>
@@ -265,7 +265,7 @@ const UserPage = () => {
                     className="w-8 h-8 rounded-full object-cover"
                   />
                   <div>
-                    <p className="font-medium">{followed.name}</p>
+                    <Link to={`/${followed.username}`}><p className="font-medium hover:underline">{followed.name}</p></Link>
                     <p className="text-gray-500 dark:text-gray-400">
                       @{followed.username}
                     </p>

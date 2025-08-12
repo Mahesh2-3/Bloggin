@@ -138,6 +138,7 @@
 
 html {
   background-color: white;
+  scroll-behavior: smooth;
 }
 
 .dark html {

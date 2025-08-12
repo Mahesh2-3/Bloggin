@@ -61,7 +61,7 @@ const Navbar = () => {
 
         {/* Show search bar on home or search pages */}
 
-        {isHome && (
+        {!isSearch && (
           <div
             onClick={() => navigate("/search")}
             className="hidden sm:flex bg-gray-400/10 cursor-pointer px-4 py-2 rounded-3xl items-center"

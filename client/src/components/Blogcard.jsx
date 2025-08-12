@@ -53,7 +53,7 @@ const Blogcard = ({ blog }) => {
           </Link>
         </div>
         <Link to={`/post/${blog._id}`}>
-          <h3 className="text-2xl hover:underline font-semibold break-normal line-clamp-2">
+          <h3 className="text-2xl hover:underline font-semibold break-all line-clamp-2">
             {blog.title}
           </h3>
         </Link>
