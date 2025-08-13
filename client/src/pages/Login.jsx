@@ -14,6 +14,7 @@ const Login = () => {
   const { showMessage } = useMessage();
   const [showPassword, setShowPassword] = useState(false);
   const { login, logout } = UseAuth();
+  const [loading, setloading] = useState(false)
   const navigate = useNavigate();
 
   const {
@@ -27,6 +28,7 @@ const Login = () => {
 
   /** Handle form submission */
   const onSubmit = async (data) => {
+    setloading(true)
     try {
       const res = await fetch(
         `${import.meta.env.VITE_BASE_URL}/api/auth/email/login`,
@@ -55,6 +57,8 @@ const Login = () => {
       reset();
     } catch {
       showMessage("Server error","#ff0000");
+    }finally{
+      setloading(false)
     }
   };
 
@@ -182,6 +186,7 @@ const Login = () => {
           {/* Submit Button */}
           <button
             type="submit"
+            disabled={loading}
             className="w-full bg-blue-600 hover:bg-blue-700 transition-all py-2 rounded-md font-medium"
           >
             Login

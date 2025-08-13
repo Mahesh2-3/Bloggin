@@ -153,7 +153,7 @@
 /* For Firefox */
 * {
   scrollbar-width: thin;   /* Thin scrollbar */
-  scrollbar-color: #000 #505050; /* Thumb color | Track color */
+  scrollbar-color: #000 #888888; /* Thumb color | Track color */
 }
 
 
