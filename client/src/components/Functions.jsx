@@ -248,10 +248,6 @@ const handleGetComments = async (postId) => {
     // You can also update your local UI state here:
     return response;
   } catch (error) {
-    console.log(
-      "Error toggling like:",
-      error.response?.data?.message || error.message
-    );
     return null;
   }
 };

@@ -14,7 +14,6 @@ const updateUserPostsArray = async (userId) => {
     // Update the user's posts array (overwrite)
     await User.findByIdAndUpdate(userId, { posts: postIds });
 
-    console.log(`User ${userId} posts array updated.`);
   } catch (err) {
     console.error(`Failed to update posts array for user ${userId}:`, err);
   }

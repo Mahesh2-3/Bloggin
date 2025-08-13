@@ -104,13 +104,7 @@ exports.updateUserProfile = async (req, res) => {
   const { name, username, email, profilePic, bio } = req.body;
   const id = req.user.id;
 
-  console.log("Updating user profile:", {
-    name,
-    username,
-    email,
-    profilePic,
-    bio,
-  });
+ 
 
   try {
     const user = await User.findByIdAndUpdate(

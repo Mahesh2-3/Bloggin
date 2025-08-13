@@ -156,6 +156,10 @@
   scrollbar-color: #000 #888888; /* Thumb color | Track color */
 }
 
+.ql-toolbar.ql-snow .ql-picker.ql-expanded .ql-picker-options {
+    border-color: #ccc;
+    color: black;
+}
 
 html {
   background-color: white;

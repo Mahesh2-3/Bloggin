@@ -217,7 +217,7 @@ const CreatePost = () => {
           value={postData.title}
           onChange={(e) => handleChange("title", e.target.value)}
           placeholder="Title"
-          className="w-full text-4xl font-bold bg-transparent border-b outline-none"
+          className="w-full text-4xl font-bold bg-transparent border-b outline-none placeholder:text-gray-300 placeholder:dark:text-gray-900"
         />
 
         {/* Description */}
@@ -225,7 +225,7 @@ const CreatePost = () => {
           value={postData.description}
           onChange={(e) => handleChange("description", e.target.value)}
           placeholder="Short description..."
-          className="w-full text-lg p-3 rounded-md border"
+          className="w-full text-lg p-3 rounded-md border placeholder:text-gray-300 placeholder:dark:text-gray-900"
         />
 
         {/* Cover Image Upload */}
@@ -285,6 +285,7 @@ const CreatePost = () => {
               value={postData.content}
               onChange={(value) => handleChange("content", value)}
               placeholder="Write your story here..."
+              className="placeholder:text-gray-300"
               modules={modules}
             />
           </div>

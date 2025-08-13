@@ -99,7 +99,7 @@ const Profile = () => {
         }
       );
     } catch (error) {
-      console.log(error);
+      showMessage("Server Error!","#ff0000")
     } finally {
       setLoading({ status: false, message: "" });
     }
@@ -126,7 +126,8 @@ const Profile = () => {
         closeForgot();
       }
     } catch (error) {
-      console.log(error);
+      showMessage("OTP Verification failed!", "#ff0000");
+
     } finally {
       setLoading({ status: false, message: "" });
     }
@@ -167,7 +168,6 @@ const Profile = () => {
 
       showMessage("Profile picture updated successfully", "#00b300");
       setUserData((prev) => ({ ...prev, profilePic: data.secure_url }));
-      console.log(data);
     } catch (err) {
       console.error("Image upload failed:", err);
       showMessage("Image upload failed.", "#e3101e");
@@ -222,7 +222,6 @@ const Profile = () => {
       setVerified(false);
       document.getElementById("newPassword").value = "";
     } catch (error) {
-      console.log(error);
       showMessage(
         error.response?.data?.message || "Failed to update password",
         "#ff0000"

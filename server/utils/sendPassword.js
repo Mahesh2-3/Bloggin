@@ -46,7 +46,6 @@ const sendGeneratedPassword = async (email, password) => {
     };
 
     const info = await transporter.sendMail(mailOptions);
-    console.log("✅ Welcome email sent:", info.response);
   } catch (err) {
     console.error("❌ Failed to send welcome email:", err);
     throw err;

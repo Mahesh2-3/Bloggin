@@ -73,7 +73,6 @@ const mailOptionsPass = {
 
 
     const info = await transporter.sendMail(mode == 'login'? mailOptionsLogin : mailOptionsPass);
-    console.log("✅ Email sent:", info.response);
   } catch (err) {
     console.error("❌ Failed to send email:", err);
     throw err;
