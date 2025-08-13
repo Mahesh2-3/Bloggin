@@ -123,6 +123,9 @@ nodemon server.js
 
 5. Engage by liking and commenting on posts.
 
+<img width="1896" height="970" alt="image" src="https://res.cloudinary.com/dhiluevpk/image/upload/v1755107889/blog_images/v8ulqivkxjm21epvif7k.png" />
+
+
 ## 🔮 Future Improvements
 - 📱 Mobile App Version (React Native)
 
