@@ -15,6 +15,7 @@ import { MdOutlineDelete } from "react-icons/md";
 import { useMessage } from "../../context/MessageContext";
 import { FiEdit3 } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+import { useTitle } from "../../context/DynamicTitle";
 
 const PostPage = () => {
   const navigate = useNavigate();
@@ -31,6 +32,8 @@ const PostPage = () => {
   const { showMessage } = useMessage();
   const [editMode, setEditMode] = useState({ istrue: false, id: null });
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  useTitle(`${PostData?.title} `)
 
   const toggleCommentMenu = (id) => {
     setCommentMenu((prev) => (prev === id ? null : id));
@@ -123,7 +126,6 @@ const PostPage = () => {
 
   const onLikeClick = async () => {
     const result = await Functions.handleLike(postId); // Await result
-    console.log(result);
     if (result.statusText == "OK") {
       setLiked(result.data.liked); // Set correct like state from response
       setLikeCount(result.data.likeCount);
@@ -149,7 +151,7 @@ const PostPage = () => {
   }, [postId]);
 
   return (
-    <div className="w-full pt-[70px] font-normal bg-white dark:bg-black text-black dark:text-white min-h-screen">
+    <div className="w-full pt-[40px] font-normal bg-white dark:bg-black text-black dark:text-white min-h-screen">
       <Navbar />
       <div className="flex justify-center relative">
         <div className="max-w-4xl w-full  xl:mx-0 mx-auto px-4 pt-16">
@@ -175,7 +177,7 @@ const PostPage = () => {
               </div>
               <button
                 onClick={() => FollowUser(PostData?.author?._id)}
-                className="mt-2 sm:mt-0 px-4 py-1 bg-black dark:bg-white text-white dark:text-black rounded-full border border-gray-800 dark:border-gray-300 hover:opacity-80 transition"
+                className="mt-2 sm:mt-0 px-4 py-1 text-sm sm:text-md bg-black dark:bg-white text-white dark:text-black rounded-full border border-gray-800 dark:border-gray-300 hover:opacity-80 transition"
               >
                 {Following ? "Un Follow" : "Follow"}
               </button>
@@ -228,7 +230,7 @@ const PostPage = () => {
               src={PostData?.coverImage}
               alt={PostData?.title}
             />
-            <div className="flex items-center justify-between gap-4 text-md text-gray-500 dark:text-gray-400 mb-10">
+            <div className="flex items-center justify-between gap-4 text-md text-gray-500 dark:text-gray-400">
               <div className="flex gap-6 text-lg ">
                 <span
                   onClick={() => onLikeClick()}
@@ -254,6 +256,10 @@ const PostPage = () => {
               </div>
               <span>Posted: {PostData?.updatedAt.split("T")[0]}</span>
             </div>
+            <div className="flex gap-3 items-center  mb-5">
+            {PostData?.tags.map((tag,index)=> <span key={index} className="text-sm text-blue-600">
+              #{tag}
+            </span>)}</div>
             {PostData && (
               <div
                 className="prose dark:prose-invert max-w-none"

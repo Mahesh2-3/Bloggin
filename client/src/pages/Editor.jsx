@@ -8,13 +8,14 @@ import Functions from "../components/Functions";
 import { UploadCloud, X } from "lucide-react";
 import { useMessage } from "../context/MessageContext";
 import useAuth from "../context/Auth";
+import { useTitle } from "../context/DynamicTitle";
 
 const CreatePost = () => {
   const navigate = useNavigate();
   const { postId } = useParams();
   const { showMessage } = useMessage();
   const { user } = useAuth();
-
+  
   // -------------------- State --------------------
   const [postData, setPostData] = useState({
     title: "",
@@ -23,6 +24,7 @@ const CreatePost = () => {
     coverImage: "",
     coverImageId: "",
   });
+  useTitle(postData?.title ? `${postData.title} ` : "Edit Post ")
 
   const [preview, setPreview] = useState(null);
   const [selectedTags, setSelectedTags] = useState([]);

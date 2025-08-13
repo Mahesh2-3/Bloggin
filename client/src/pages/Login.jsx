@@ -6,8 +6,10 @@ import SplitText from "../animations/Splittext";
 import UseAuth from "../context/Auth";
 import { useEffect } from "react";
 import { useMessage } from "../context/MessageContext";
+import { useTitle } from "../context/DynamicTitle";
 
 const Login = () => {
+  useTitle("Login ")
   const location = useLocation();
   const { showMessage } = useMessage();
   const [showPassword, setShowPassword] = useState(false);
@@ -20,6 +22,7 @@ const Login = () => {
     formState: { errors },
     reset,
   } = useForm();
+
 
 
   /** Handle form submission */
@@ -40,7 +43,7 @@ const Login = () => {
       const result = await res.json();
 
       if (!res.ok) {
-        showMessage("Login Failed","#ff0000")
+        showMessage(result.message,"#ff0000")
         return;
       }
 

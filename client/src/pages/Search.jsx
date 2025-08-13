@@ -4,9 +4,11 @@ import { useSearchParam } from "../context/Searchcontext";
 import Blogcard from "../components/Blogcard";
 import Functions from "../components/Functions";
 import { Link } from "react-router-dom";
+import { useTitle } from "../context/DynamicTitle";
 
 const Search = () => {
   const { searchParam } = useSearchParam();
+  useTitle(searchParam == "" ? "Search " : `${searchParam} `)
   const [posts, setPosts] = useState([]);
   const [users, setUsers] = useState([]);
   const [activeTab, setActiveTab] = useState("posts");

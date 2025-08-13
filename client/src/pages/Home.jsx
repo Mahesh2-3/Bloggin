@@ -7,20 +7,53 @@ import { PiArrowBendRightDownBold } from "react-icons/pi";
 import useAuth from "../context/Auth";
 import Blogcard from "../components/Blogcard";
 import Functions from "../components/Functions";
+import { useTitle } from "../context/DynamicTitle";
 
 const Home = () => {
+  useTitle("Home ");
+
   const { user, login, logout } = useAuth();
   const [posts, setPosts] = useState([]);
   const [presentKey, setPresentKey] = useState("All");
   const [allUsers, setallUsers] = useState([]);
   const [followingIds, setFollowingIds] = useState(user?.following || []);
+  // Add this above return:
+  const keywordRefs = useRef({});
+
+  const handleKeywordClick = (keyword) => {
+    setPresentKey(keyword);
+    keywordRefs.current[keyword]?.scrollIntoView({
+      behavior: "smooth",
+      inline: "center", // centers horizontally
+      block: "nearest",
+    });
+  };
 
   // Filter posts based on tag or show all
-  const filteredPosts = (
+  const filteredPosts =
     presentKey === "All"
       ? posts
-      : posts.filter((post) => post.tags.includes(presentKey))
-  ).filter((post) => !post.likes.includes(user?._id));
+      : posts.filter((post) => post.tags.includes(presentKey));
+
+  const unlikedPosts = filteredPosts.filter(
+    (post) => !post.likes.includes(user?._id)
+  );
+  const likedPosts = filteredPosts.filter((post) =>
+    post.likes.includes(user?._id)
+  );
+
+  const finalPosts = [...unlikedPosts, ...likedPosts];
+
+  const tryNew = posts
+    .filter((post) => !post.likes.includes(user?._id))
+    .sort((a, b) => {
+      const getLowestLikedTagValue = (tags) => {
+        if (!tags || !Array.isArray(tags)) return 0;
+        return Math.min(...tags.map((tag) => user?.likedTags?.[tag] ?? 0));
+      };
+      return getLowestLikedTagValue(a.tags) - getLowestLikedTagValue(b.tags);
+    })
+    .slice(0, 3);
 
   const userTopTags = Object.entries(user?.likedTags || {})
     .filter(([_, count]) => count > 0)
@@ -154,7 +187,8 @@ const Home = () => {
               {keywords.map((keyword, index) => (
                 <span
                   key={index}
-                  onClick={() => setPresentKey(keyword)}
+                  ref={(el) => (keywordRefs.current[keyword] = el)}
+                  onClick={() => handleKeywordClick(keyword)}
                   className={`whitespace-nowrap cursor-pointer ${
                     presentKey === keyword
                       ? "font-bold text-black dark:text-white"
@@ -176,8 +210,8 @@ const Home = () => {
             )}
           </div>
           <div>
-            {filteredPosts.length > 0 ? (
-              filteredPosts
+            {finalPosts.length > 0 ? (
+              finalPosts
                 // Sort posts based on highest likedTags value in user's data
                 .sort((a, b) => {
                   const getHighestLikedTagValue = (tags) => {
@@ -207,49 +241,39 @@ const Home = () => {
               Try New{" "}
               <PiArrowBendRightDownBold size={16} className="relative top-1" />
             </h1>
-            {posts
-              .filter((post) => !post.likes.includes(user?._id))
-              .sort((a, b) => {
-                const getLowestLikedTagValue = (tags) => {
-                  if (!tags || !Array.isArray(tags)) return 0;
-                  return Math.min(
-                    ...tags.map((tag) => user?.likedTags?.[tag] ?? 0)
-                  );
-                };
-                return (
-                  getLowestLikedTagValue(a.tags) -
-                  getLowestLikedTagValue(b.tags)
-                );
-              })
-              .slice(0, 3)
-              .map((post, index) => (
-                <div key={index} className="flex flex-col gap-2">
-                  <div className="flex items-center gap-2">
-                    <img
-                      referrerPolicy="no-referrer"
-                      className="h-8 w-8 rounded-full"
-                      src={post.author.profilePic}
-                      alt="Profile"
-                    />
-                    <Link to={`/${post.author.username}`}>
-                      <div className="text-gray-500 cursor-pointer hover:underline dark:text-gray-400 text-sm">
-                        {post.author.name}
-                      </div>
-                    </Link>
-                  </div>
-                  <Link to={`/post/${post._id}`}>
-                    <div className="hover:underline text-semibold text-xl break-all text-ellipsis line-clamp-1">
-                      {post.title}
+            {tryNew.map((post, index) => (
+              <div key={index} className="flex flex-col gap-2">
+                <div className="flex items-center gap-2">
+                  <img
+                    referrerPolicy="no-referrer"
+                    className="h-8 w-8 rounded-full"
+                    src={post.author.profilePic}
+                    alt="Profile"
+                  />
+                  <Link to={`/${post.author.username}`}>
+                    <div className="text-gray-500 cursor-pointer hover:underline dark:text-gray-400 text-sm">
+                      {post.author.name}
                     </div>
                   </Link>
-                  <div className="flex items-center gap-4">
-                    <GoNorthStar size={15} fill="#ffc017" />
-                    <span className="text-gray-500 dark:text-gray-400 text-sm">
-                      {post.createdAt.split("T")[0]}
-                    </span>
-                  </div>
                 </div>
-              ))}
+                <Link to={`/post/${post._id}`}>
+                  <div className="hover:underline text-semibold text-xl break-all text-ellipsis line-clamp-1">
+                    {post.title}
+                  </div>
+                </Link>
+                <div className="flex items-center gap-4">
+                  <GoNorthStar size={15} fill="#ffc017" />
+                  <span className="text-gray-500 dark:text-gray-400 text-sm">
+                    {post.createdAt.split("T")[0]}
+                  </span>
+                </div>
+              </div>
+            ))}
+            {tryNew.length == 0 && (
+              <div className="p-5 text-gray-600 dark:text-gray-400">
+                No Posts Found
+              </div>
+            )}
           </div>
           <div className="p-6 border-t border-gray-500/10 dark:border-gray-50/50 pt-4">
             <h1 className="font-semibold mb-5 flex items-center gap-2">
@@ -263,7 +287,7 @@ const Home = () => {
                 .map(([tag], index) => (
                   <div
                     key={index}
-                    onClick={() => setPresentKey(tag)}
+                    onClick={() => handleKeywordClick(tag)}
                     className="py-1 px-4 text-sm bg-gray-200 dark:bg-gray-800 rounded-2xl w-fit cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-700"
                   >
                     {tag}

@@ -170,10 +170,10 @@ exports.deleteUserAccount = async (req, res) => {
     await Post.deleteMany({ author: userId });
 
     // Delete user's likes
-    await Like.deleteMany({ user: userId });
+    await Like.deleteMany({ userId: userId });
 
     // Delete user's comments
-    await Comment.deleteMany({ user: userId });
+    await Comment.deleteMany({ userId: userId });
 
     // Remove user likes from all posts
     await Post.updateMany({}, { $pull: { likes: userId } });

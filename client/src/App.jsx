@@ -55,7 +55,7 @@ const AppRoutes = () => {
         />
           <Route path="/edit" element={<ProtectedRoute><CreatePost /></ProtectedRoute>} />
           <Route path="/help" element={<ProtectedRoute><Help /></ProtectedRoute>} />
-          <Route path="/profile/edit" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+          <Route path="/settings" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/edit/:postId" element={<ProtectedRoute><CreatePost /></ProtectedRoute>} />
           <Route path="/:username" element={<ProtectedRoute><UserPage /></ProtectedRoute>} />
           <Route path="/post/:postId" element={<ProtectedRoute><PostPage /></ProtectedRoute>} />

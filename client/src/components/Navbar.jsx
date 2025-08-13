@@ -10,6 +10,7 @@ import {
   AiOutlineQuestionCircle,
   AiOutlineGithub,
   AiOutlineHome,
+  AiOutlineSetting,
 } from "react-icons/ai";
 import { CiDark, CiLight, CiSearch } from "react-icons/ci";
 import { useTheme } from "../context/ThemeContext";
@@ -84,7 +85,7 @@ const Navbar = () => {
               <span>Write</span>
             </div>
           )}
-          {isHome && (
+          {!isSearch && (
             <CiSearch
               onClick={() => navigate("/search")}
               className="flex sm:hidden cursor-pointer"
@@ -130,6 +131,12 @@ const Navbar = () => {
                       <span>Theme</span>
                     </div>
                     <ThemeSwitch />
+                  </li>
+                  <li className="flex items-center gap-2 cursor-pointer hover:underline">
+                    <AiOutlineSetting />
+                    <Link to={`/settings`}>
+                      <span>Settings</span>
+                    </Link>
                   </li>
                   <li className="flex items-center gap-2 cursor-pointer hover:underline">
                     <AiOutlineQuestionCircle />

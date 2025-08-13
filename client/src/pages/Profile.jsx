@@ -14,10 +14,14 @@ import { RxCross1 } from "react-icons/rx";
 // Editor
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import { useNavigate } from "react-router-dom";
+import { useTitle } from "../context/DynamicTitle";
 
 const Profile = () => {
-  const { user } = useAuth();
+  useTitle("Settings ")
+  const { user, logout } = useAuth();
   const { showMessage } = useMessage();
+  const navigate = useNavigate()
 
   // Profile states
   const [UserData, setUserData] = useState({});
@@ -240,6 +244,8 @@ const Profile = () => {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         }
       );
+      logout();
+      navigate("/login");
       showMessage("Account deleted successfully", "#00b300");
     } catch (error) {
       console.error(error);
@@ -282,7 +288,7 @@ const Profile = () => {
             <h2 className="text-xl font-bold mb-2 text-red-500">
               Confirm Account Deletion
             </h2>
-            <p className="text-xs mb-3">
+            <p className="text-xs mb-3 select-none">
               To confirm, type <b>delete my account</b> and enter your password.
             </p>
             <input

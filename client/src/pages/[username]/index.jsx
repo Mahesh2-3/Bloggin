@@ -3,12 +3,10 @@ import { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar";
 import axios from "axios";
 import useAuth from "../../context/Auth";
-import { GoNorthStar } from "react-icons/go";
-import { TiHeartFullOutline, TiHeartOutline } from "react-icons/ti";
-import { FaRegComment } from "react-icons/fa";
 import Functions from "../../components/Functions";
 import { FiEdit3 } from "react-icons/fi";
 import Blogcard from "../../components/Blogcard";
+import { useTitle } from "../../context/DynamicTitle";
 
 const UserPage = () => {
   const { username } = useParams();
@@ -21,7 +19,8 @@ const UserPage = () => {
   const [Followers, setFollowers] = useState([]);
   const [Following, setFollowing] = useState([]);
   const [NotFound, setNotFound] = useState(false);
-
+  useTitle(`${userData?.name} `)
+  
   const fetchUser = async () => {
     try {
       const res = await axios.get(
@@ -123,8 +122,6 @@ const UserPage = () => {
     );
   }
 
-  console.log(Posts);
-
   return (
     <div className="w-full font-normal pt-[70px] bg-white dark:bg-black text-black dark:text-white min-h-screen">
       <Navbar />
@@ -163,16 +160,16 @@ const UserPage = () => {
           </div>
           {userData?._id == user?._id && (
             <button className="group flex items-center absolute right-0 bg-white text-black px-3 py-2 rounded-full transition-all gap-2 duration-300 md:hover:px-5">
-              <Link className="flex gap-2" to={`/profile/edit`}>
+              <Link className="flex gap-2" to={`/settings`}>
                 {" "}
                 <span
                   className="ml-2 whitespace-nowrap transition-all duration-300 
-                  max-w-xs overflow-hidden 
+                  max-w-xs overflow-hidden text-sm sm:text-md
                   md:max-w-0 md:group-hover:max-w-xs"
                 >
                   Edit Profile
                 </span>
-                <FiEdit3 className="text-xl transition-transform duration-300" />
+                <FiEdit3 className="sm:text-xl text-lg transition-transform duration-300" />
               </Link>
             </button>
           )}

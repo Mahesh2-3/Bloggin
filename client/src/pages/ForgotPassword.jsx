@@ -3,8 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useMessage } from "../context/MessageContext";
 import axios from "axios";
+import { useTitle } from "../context/DynamicTitle";
 
 const ForgotPassword = () => {
+  useTitle("Forgot Password ")
   const { showMessage } = useMessage();
   const navigate = useNavigate();
 

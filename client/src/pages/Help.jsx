@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import useAuth from "../context/Auth";
 import { useMessage } from "../context/MessageContext";
+import { useTitle } from "../context/DynamicTitle";
 
 const Help = () => {
+  useTitle("Help ");
   const { user } = useAuth();
   const { showMessage } = useMessage();
 

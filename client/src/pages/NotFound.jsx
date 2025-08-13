@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
+import { useTitle } from "../context/DynamicTitle";
 
 const NotFound = () => {
+  useTitle("404 Not Found ")
   return (
     <div className="flex items-center justify-center min-h-screen bg-white dark:bg-[#121212] transition-colors duration-300">
       <div className="text-center p-8">

@@ -4,8 +4,10 @@ import { useNavigate } from "react-router-dom";
 import UseAuth from "../context/Auth";
 import { MdOutlineEmail, MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { TbArrowBarToLeft } from "react-icons/tb";
+import { useTitle } from "../context/DynamicTitle";
 
 const Signup = () => {
+  useTitle("SignUp ")
   const { login, logout } = UseAuth();
   const navigate = useNavigate();
 
