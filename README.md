@@ -125,6 +125,8 @@ nodemon server.js
 
 <img width="1896" height="970" alt="image" src="https://res.cloudinary.com/dhiluevpk/image/upload/v1755107889/blog_images/v8ulqivkxjm21epvif7k.png" />
 
+<img width="1896" height="970" alt="image" src="https://res.cloudinary.com/dhiluevpk/image/upload/v1755108005/blog_images/feokx38ol9bye1zvmob5.png" />
+
 
 ## 🔮 Future Improvements
 - 📱 Mobile App Version (React Native)
