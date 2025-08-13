@@ -45,8 +45,7 @@ With high-security authentication, a sleek UI, and interactive community feature
 - Nodemailer (OTP Verification)  
 
 **Deployment:**  
-- Vercel (Frontend)  
-- [Your backend hosting here if applicable]  
+- Vercel
 
 ---
 
@@ -146,4 +145,4 @@ nodemon server.js
 
 **Backend**: Node.js, Express.js, MongoDB, Passport.js, Cloudinary
 Auth: JWT, OAuth2 (Google), OTP verification
-Deployment: Vercel
+
