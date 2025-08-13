@@ -42,7 +42,7 @@ const Blogcard = ({ blog }) => {
         <div className="flex items-center gap-3 mb-2">
           <img
             referrerPolicy="no-referrer"
-            className="h-8 w-8 rounded-full"
+            className="w-9 h-9 rounded-full object-cover"
             src={blog.author.profilePic}
             alt="Profile"
           />
@@ -108,7 +108,7 @@ const Blogcard = ({ blog }) => {
           <div className="flex items-center gap-3 mb-2">
             <img
               referrerPolicy="no-referrer"
-              className="h-8 w-8 rounded-full"
+              className="w-9 h-9 rounded-full object-cover"
               src={blog.author.profilePic}
               alt="Profile"
             />

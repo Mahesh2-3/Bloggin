@@ -18,10 +18,10 @@ import { useNavigate } from "react-router-dom";
 import { useTitle } from "../context/DynamicTitle";
 
 const Profile = () => {
-  useTitle("Settings ")
-  const { user, logout } = useAuth();
+  useTitle("Settings ");
+  const { user, logout, login } = useAuth();
   const { showMessage } = useMessage();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   // Profile states
   const [UserData, setUserData] = useState({});
@@ -153,16 +153,21 @@ const Profile = () => {
     if (!file) return;
     setLoading({ status: true, message: "imageupload" });
     try {
-      const data = await Functions.handleImageUpload(file);
-      await axios.put(
+      const res = await Functions.handleImageUpload(file);
+      const data= res.data;
+     await axios.put(
         `${import.meta.env.VITE_BASE_URL}/api/users`,
         { ...UserData, profilePic: data.secure_url },
         {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+          headers: {
+            Authorization: ` Bearer ${localStorage.getItem("token")}`,
+          },
         }
       );
+
       showMessage("Profile picture updated successfully", "#00b300");
       setUserData((prev) => ({ ...prev, profilePic: data.secure_url }));
+      console.log(data);
     } catch (err) {
       console.error("Image upload failed:", err);
       showMessage("Image upload failed.", "#e3101e");
@@ -173,7 +178,7 @@ const Profile = () => {
 
   const handleUpdateProfile = async () => {
     try {
-      await axios.put(
+      const res = await axios.put(
         `${import.meta.env.VITE_BASE_URL}/api/users`,
         {
           name: UserData.name,
@@ -186,6 +191,8 @@ const Profile = () => {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         }
       );
+      login(res.data);
+
       showMessage("Profile updated successfully", "#00b300");
       fetchingUser();
     } catch (error) {
@@ -411,7 +418,7 @@ const Profile = () => {
 
       {/* Profile Edit Section */}
       {!passwordTab && (
-        <div className="flex flex-col items-center justify-center mt-10 px-4">
+        <div className="flex flex-col items-start justify-center mt-10 px-4">
           <div className="relative">
             <img
               className="w-24 h-24 sm:w-32 sm:h-32 rounded-full object-contain"
@@ -509,7 +516,7 @@ const Profile = () => {
                   }
                 />
               </label>
-              <div className="bg-white h-[300px] overflow-y-auto hide-scrollbar text-black dark:text-white dark:bg-[#181818] rounded-md p-2">
+              <div className="bg-white h-fit overflow-y-auto hide-scrollbar text-black dark:text-white dark:bg-[#181818] rounded-md p-2">
                 <div className="min-w-full">
                   <ReactQuill
                     theme="snow"
@@ -523,7 +530,7 @@ const Profile = () => {
             </div>
           </div>
 
-          <div className="flex flex-col-reverse sm:flex-row items-center justify-between w-full max-w-xl gap-3 mt-4">
+          <div className="flex flex-col-reverse sm:flex-row items-center justify-between w-full max-w-xl gap-3 my-4">
             <button
               onClick={() => setShowDeleteBox(true)}
               className="w-full sm:w-auto px-6 py-3 rounded-md hover:border-b border-red-500 text-red-500 font-semibold"

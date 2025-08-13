@@ -279,7 +279,7 @@ const CreatePost = () => {
         {/* Content */}
         <div>
           <label className="block font-medium mb-2">Content</label>
-          <div className="bg-white h-[300px] overflow-y-auto text-black dark:text-white dark:bg-[#1e1e1e] rounded-md p-2">
+          <div className="bg-white h-fit text-black dark:text-white dark:bg-[#1e1e1e] rounded-md p-2">
             <ReactQuill
               theme="snow"
               value={postData.content}

@@ -136,6 +136,27 @@
   }
 }
 
+/* For Chrome, Edge, and Safari */
+::-webkit-scrollbar {
+  width: 6px;              /* Small width */
+}
+
+::-webkit-scrollbar-track {
+  background: #ccc;        /* Light gray track */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #000;  /* Black thumb */
+  border-radius: 3px;      /* Rounded edges */
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: thin;   /* Thin scrollbar */
+  scrollbar-color: #000 #505050; /* Thumb color | Track color */
+}
+
+
 html {
   background-color: white;
   scroll-behavior: smooth;

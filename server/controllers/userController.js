@@ -28,7 +28,6 @@ exports.getUserProfile = async (req, res) => {
   }
 };
 
-
 exports.getAllUsers = async (req, res) => {
   try {
     const users = await User.find().select("-password");
@@ -102,10 +101,16 @@ exports.getFollowing = async (req, res) => {
   }
 };
 exports.updateUserProfile = async (req, res) => {
-  const { name, username, email, profilePic,bio } = req.body;
+  const { name, username, email, profilePic, bio } = req.body;
   const id = req.user.id;
 
-  console.log("Updating user profile:", { name, username, email, profilePic, bio });
+  console.log("Updating user profile:", {
+    name,
+    username,
+    email,
+    profilePic,
+    bio,
+  });
 
   try {
     const user = await User.findByIdAndUpdate(
@@ -147,7 +152,6 @@ exports.updateUserPassword = async (req, res) => {
   }
 };
 
-
 exports.deleteUserAccount = async (req, res) => {
   const userId = req.params.userId;
   const { password } = req.body; // Get password from request body
@@ -187,4 +191,3 @@ exports.deleteUserAccount = async (req, res) => {
     res.status(500).json({ message: "Server error during deletion" });
   }
 };
-

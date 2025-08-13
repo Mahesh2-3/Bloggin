@@ -45,7 +45,7 @@ const Home = () => {
   const finalPosts = [...unlikedPosts, ...likedPosts];
 
   const tryNew = posts
-    .filter((post) => !post.likes.includes(user?._id))
+    .filter((post)=> post.author._id !== user?._id)
     .sort((a, b) => {
       const getLowestLikedTagValue = (tags) => {
         if (!tags || !Array.isArray(tags)) return 0;
@@ -246,7 +246,7 @@ const Home = () => {
                 <div className="flex items-center gap-2">
                   <img
                     referrerPolicy="no-referrer"
-                    className="h-8 w-8 rounded-full"
+                    className="h-9 w-9 object-contain rounded-full"
                     src={post.author.profilePic}
                     alt="Profile"
                   />
