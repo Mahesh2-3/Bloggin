@@ -13,11 +13,24 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB connected"))
   .catch(err => console.error("MongoDB connection error:", err));
 
-// Middleware
+  const allowedOrigins = [
+  "http://localhost:3000",
+  process.env.CLIENT_URL
+];
+
 app.use(cors({
-  origin: process.env.CLIENT_URL,
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   credentials: true,
 }));
+
+
+
 app.use(express.json());
 
 app.use(session({
@@ -33,6 +46,8 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
+app.options("*", cors()); 
+
 
 // Routes
 app.use("/api/auth", require("./routes/auth"));
