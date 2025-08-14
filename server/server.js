@@ -54,6 +54,9 @@ app.options("*", cors());
 
 
 // Routes
+app.get("/", (req, res) => {
+  res.send("Hey this is server");
+});
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/users", require("./routes/users"));
 app.use("/api/posts", require("./routes/Posts"));
