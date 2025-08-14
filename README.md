@@ -145,4 +145,7 @@ nodemon server.js
 
 **Backend**: Node.js, Express.js, MongoDB, Passport.js, Cloudinary
 Auth: JWT, OAuth2 (Google), OTP verification
+<<<<<<< HEAD
 
+=======
+>>>>>>> ef57171 (Changed serverjs for vercel deployment)

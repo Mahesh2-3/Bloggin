@@ -8,21 +8,17 @@ require("./config/passport");
 
 const app = express();
 
-mongoose.connect(process.env.MONGO_URI);
+// Connect to MongoDB
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log("MongoDB connected"))
+  .catch(err => console.error("MongoDB connection error:", err));
 
+// Middleware
 app.use(cors({
   origin: process.env.CLIENT_URL,
   credentials: true,
 }));
 app.use(express.json());
-
-app.use(cors({
-  origin: [
-    process.env.CLIENT_URL,
-  ],
-  credentials: true,
-}));
-
 
 app.use(session({
   secret: "keyboard cat",
@@ -31,18 +27,20 @@ app.use(session({
   cookie: {
     secure: true, // should be true in production with HTTPS
     httpOnly: true,
-    maxAge: 24 * 60 * 60 * 7000, // 7 day
+    maxAge: 24 * 60 * 60 * 7000, // 7 days
   },
 }));
 
 app.use(passport.initialize());
 app.use(passport.session());
 
+// Routes
 app.use("/api/auth", require("./routes/auth"));
-app.use('/api/users', require('./routes/users'));
-app.use('/api/posts', require('./routes/Posts'));
-app.use('/api/comments', require('./routes/comments'));
-app.use('/api/likes', require('./routes/likes'));
-app.use('/api/upload', require('./routes/upload'));
+app.use("/api/users", require("./routes/users"));
+app.use("/api/posts", require("./routes/Posts"));
+app.use("/api/comments", require("./routes/comments"));
+app.use("/api/likes", require("./routes/likes"));
+app.use("/api/upload", require("./routes/upload"));
 
-app.listen(5000, () => console.log("Server started on port 5000"));
+// Export for Vercel serverless
+module.exports = app;
