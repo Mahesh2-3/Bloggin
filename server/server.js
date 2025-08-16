@@ -64,7 +64,7 @@ app.use("/api/likes", require("./routes/likes"));
 app.use("/api/upload", require("./routes/upload"));
 
 // Export for Vercel serverless
-// app.listen(5000, () => {
-//   console.log("Local server running on http://localhost:5000");
-// });
+app.listen(5000, () => {
+  console.log("Local server running on http://localhost:5000");
+});
 module.exports = app;

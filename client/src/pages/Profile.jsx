@@ -141,6 +141,8 @@ const Profile = () => {
     if (res.statusText === "OK") {
       setUserData(res.data);
       setAboutMe(res.data.bio || "");
+    }else{
+      showMessage("Error fetching user data","#ff0000")
     }
   };
 
@@ -417,7 +419,7 @@ const Profile = () => {
 
       {/* Profile Edit Section */}
       {!passwordTab && (
-        <div className="flex flex-col items-start justify-center mt-10 px-4">
+        <div className="flex flex-col sm:items-center items-center justify-center mt-10 px-4">
           <div className="relative">
             <img
               className="w-24 h-24 sm:w-32 sm:h-32 rounded-full object-contain"

@@ -170,11 +170,11 @@ const Home = () => {
 
       <div className="lg:w-[60%] w-full flex mx-auto px-4 h-[1000px] ">
         <div className="sm:w-[65%] w-full overflow-y-scroll hide-scrollbar sm:border-r-1  border-gray-500/30 dark:border-gray-50/50 relative ">
-          <div className="sticky w-full pt-10 top-0 bg-white dark:bg-black z-10">
+          <div className="sticky w-full sm:pt-10 pt-5 top-0 bg-white dark:bg-black z-10">
             {showLeftArrow && (
               <button
                 onClick={scrollLeft}
-                className="absolute left-0 z-10 h-fit top-8 px-2 bg-white/80 py-2 dark:bg-black backdrop-blur-md rounded-r-md flex items-center"
+                className="absolute left-0 z-10 h-fit sm:top-8 top-4 px-2 bg-white/80 py-2 dark:bg-black backdrop-blur-md rounded-r-md flex items-center"
               >
                 <FaChevronLeft className="text-xl text-gray-400" />
               </button>
@@ -203,7 +203,7 @@ const Home = () => {
             {showRightArrow && (
               <button
                 onClick={scrollRight}
-                className="absolute right-0 top-8 z-10 h-fit px-2 bg-white/80 py-2 dark:bg-black backdrop-blur-md rounded-l-md flex items-center"
+                className="absolute right-0 sm:top-8 top-4 z-10 h-fit px-2 bg-white/80 py-2 dark:bg-black backdrop-blur-md rounded-l-md flex items-center"
               >
                 <FaChevronRight className="text-xl text-gray-400" />
               </button>

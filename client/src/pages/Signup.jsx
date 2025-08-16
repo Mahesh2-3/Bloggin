@@ -187,7 +187,7 @@ const Signup = () => {
 
       <SplitText
         text={`Bloggin'`}
-        className="text-[126px] select-none font-semibold font-main text-white"
+        className="sm:text-[126px] text-[90px] select-none font-semibold font-main text-white"
         delay={100}
         duration={0.6}
         ease="power3.out"

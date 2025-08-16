@@ -41,7 +41,7 @@ const Landing = () => {
           </div>
         </div>
 
-        <div className="mt-24 w-full font-semibold xl:text-6xl md:text-5xl text-4xl">
+        <div className="mt-24 w-full font-semibold xl:text-6xl md:text-5xl sm:text-4xl text-2xl">
           Your{" "}
           <span className="slide mx-2">
             <span className="wrapper">

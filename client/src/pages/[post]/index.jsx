@@ -129,6 +129,8 @@ const PostPage = () => {
     if (result.statusText == "OK") {
       setLiked(result.data.liked); // Set correct like state from response
       setLikeCount(result.data.likeCount);
+    }else{
+      showMessage("error adding likes","#ff0000")
     }
   };
   useEffect(() => {
