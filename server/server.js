@@ -14,7 +14,8 @@ mongoose.connect(process.env.MONGO_URI)
   .catch(err => console.error("MongoDB connection error:", err));
 
   const allowedOrigins = [
-  process.env.CLIENT_URL
+  process.env.CLIENT_URL,
+  "http://localhost:5173"
 ];
 
 app.use((req, res, next) => {
@@ -63,8 +64,7 @@ app.use("/api/comments", require("./routes/comments"));
 app.use("/api/likes", require("./routes/likes"));
 app.use("/api/upload", require("./routes/upload"));
 
-// Export for Vercel serverless
-// app.listen(5000, () => {
-//   console.log("Local server running on http://localhost:5000");
-// });
+app.listen(5000, () => {
+  console.log("Local server running on http://localhost:5000");
+});
 module.exports = app;

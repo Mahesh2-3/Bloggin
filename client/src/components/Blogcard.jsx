@@ -17,7 +17,7 @@ const Blogcard = ({ blog }) => {
   const [likeCount, setlikeCount] = useState(blog?.likes.length || 0);
 
   const onLikeClick = async () => {
-    const result = await Functions.handleLike(blog._id); // Await result
+    const result = await Functions.handleLike(blog?._id); // Await result
     if (result.statusText == "OK") {
       setlikeStatus(result.data.liked); // Set correct like state from response
       setlikeCount(result.data.likeCount); // Update like count
@@ -26,7 +26,7 @@ const Blogcard = ({ blog }) => {
 
   useEffect(() => {
     const LikeStatus = async () => {
-      const res = await Functions.getLikeStatus(blog._id);
+      const res = await Functions.getLikeStatus(blog?._id);
       setlikeStatus(res.data.liked);
     };
     LikeStatus();

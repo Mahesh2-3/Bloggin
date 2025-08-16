@@ -79,7 +79,7 @@ const CreatePost = () => {
     setLoading((l) => ({ ...l, deleting: true }));
 
     try {
-      await Functions.handleRemoveImage(postData.coverImageId, showMessage);
+      await Functions.handleRemoveImage(postData?.coverImageId, showMessage);
       setPostData((prev) => ({
         ...prev,
         coverImage: "",

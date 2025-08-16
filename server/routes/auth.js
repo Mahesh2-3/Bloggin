@@ -67,47 +67,66 @@ router.post("/email/verifyforgot",verifyForgotOtp);
 router.put("/email/change-password",verifyToken ,changePassword);
 router.put("/email/reset-password", resetPassword);
 
+
 router.post("/email/login", async (req, res) => {
-  const { identifier, password } = req.body; // identifier can be email or username
-
+  const { identifier, password } = req.body;
+  console.log("body",req.body)
+  
   if (!identifier || !password) {
-    return res.status(400).json({ message: "Email/Username and password are required" });
+    return res.status(400).json({
+      message: "Email/Username and password are required",
+    });
   }
-
+  
   try {
-    // Find user by email or username
+    // Find user
+    console.log("finding user")
     const user = await User.findOne({
       $or: [{ email: identifier }, { username: identifier }],
     });
-
+    
+    console.log("checking user")
     if (!user) {
       return res.status(401).json({ message: "User not found" });
     }
-
-    // Check password
+    
+    console.log("checxking user pass")
+    if (!user.password) {
+      console.error("Login error: user has no password in DB", user);
+      return res.status(500).json({ message: "User has no password" });
+    }
+    
+    // Compare password
+    console.log("comparing pass")
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(401).json({ message: "Incorrect password" });
     }
+    
+    console.log("cheecking jwt secret")
+    if (!process.env.JWT_SECRET) {
+      console.error("Login error: JWT_SECRET is not set");
+      return res.status(500).json({ message: "Server misconfiguration" });
+    }
 
-    // If you want to start a session:
-    const jwt = require("jsonwebtoken");
+    // Generate token
     const token = jwt.sign(
       { id: user._id, username: user.username, email: user.email },
       process.env.JWT_SECRET,
       { expiresIn: "1d" }
     );
 
-    return res.status(200).json({ message: "Login successful", user, token });
-
-
-    // OR if you're using JWT (let me know if you want this instead)
-
+    return res.status(200).json({
+      message: "Login successful",
+      user,
+      token,
+    });
   } catch (err) {
     console.error("Login error:", err);
     res.status(500).json({ message: "Server error" });
   }
 });
+
 
 
 module.exports = router;

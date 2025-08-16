@@ -60,7 +60,7 @@ const PostPage = () => {
     }
     let res;
     if (editMode.istrue) {
-      res = await Functions.editComment(editMode.id, commentInput);
+      res = await Functions.editComment(editMode?.id, commentInput);
       setEditMode({ istrue: false, id: null });
     } else {
       res = await Functions.handleAddComment(commentInput, postId);
@@ -319,7 +319,7 @@ const PostPage = () => {
                           <div className="text-sm flex gap-2 items-center mb-2 font-medium">
                             <span>@{comment.user.username}</span>
                             <span className="text-xs text-gray-400">
-                              • {Functions.getTimeAgo(comment.createdAt)}
+                              • {Functions.getTimeAgo(comment?.createdAt)}
                             </span>
                           </div>
 

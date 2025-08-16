@@ -43,6 +43,7 @@ const Login = () => {
       );
 
       const result = await res.json();
+      console.log("result: ",result,"res: ",res)
 
       if (!res.ok) {
         showMessage(result.message,"#ff0000")
