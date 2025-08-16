@@ -14,7 +14,6 @@ mongoose.connect(process.env.MONGO_URI)
   .catch(err => console.error("MongoDB connection error:", err));
 
   const allowedOrigins = [
-  "http://localhost:3000",
   process.env.CLIENT_URL
 ];
 
@@ -50,7 +49,7 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
-app.options("*", cors()); 
+// app.options("*", cors()); 
 
 
 // Routes
@@ -65,4 +64,7 @@ app.use("/api/likes", require("./routes/likes"));
 app.use("/api/upload", require("./routes/upload"));
 
 // Export for Vercel serverless
+app.listen(5000, () => {
+  console.log("Local server running on http://localhost:5000");
+});
 module.exports = app;

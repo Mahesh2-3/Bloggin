@@ -65,7 +65,7 @@ router.post("/email/feedback",handleFeedback);
 router.post("/email/forgotPassword",handleForgotPassword);
 router.post("/email/verifyforgot",verifyForgotOtp);
 router.put("/email/change-password",verifyToken ,changePassword);
-router.put("/email/reset-password" ,resetPassword);
+router.put("/email/reset-password", resetPassword);
 
 router.post("/email/login", async (req, res) => {
   const { identifier, password } = req.body; // identifier can be email or username
