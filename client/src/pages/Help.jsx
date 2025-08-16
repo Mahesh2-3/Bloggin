@@ -124,7 +124,7 @@ const Help = () => {
                 placeholder="Your Name"
                 value={problemName}
                 onChange={(e) => setProblemName(e.target.value)}
-                className={inputClass}
+                className={`${inputClass} rounded-xl`}
               />
               <textarea
                 placeholder="Describe your problem..."
@@ -156,7 +156,7 @@ const Help = () => {
                 placeholder="Your Name"
                 value={feedbackName}
                 onChange={(e) => setFeedbackName(e.target.value)}
-                className={inputClass}
+                className={`${inputClass} rounded-xl`}
               />
               <textarea
                 placeholder="Your feedback..."

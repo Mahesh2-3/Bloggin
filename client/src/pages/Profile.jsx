@@ -8,7 +8,7 @@ import Functions from "../components/Functions";
 // Icons
 import { FiEdit3 } from "react-icons/fi";
 import { FaLock, FaEye, FaEyeSlash, FaInfoCircle } from "react-icons/fa";
-import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { AiOutlineLoading, AiOutlineLoading3Quarters } from "react-icons/ai";
 import { RxCross1 } from "react-icons/rx";
 
 // Editor
@@ -44,7 +44,7 @@ const Profile = () => {
   const timerRef = useRef(null);
 
   // Loading
-  const [loading, setLoading] = useState({ status: false, message: "" });
+  const [loading, setLoading] = useState("");
 
   /* ===========================
         OTP FUNCTIONS
@@ -87,7 +87,7 @@ const Profile = () => {
 
   const handleForgotPassword = async () => {
     setshowForgot(true);
-    setLoading({ status: true, message: "sendindotp" });
+    setLoading("sendindotp");
     handlesettimer();
     try {
       await fetch(
@@ -99,14 +99,14 @@ const Profile = () => {
         }
       );
     } catch (error) {
-      showMessage("Server Error!","#ff0000")
+      showMessage("Server Error!", "#ff0000");
     } finally {
-      setLoading({ status: false, message: "" });
+      setLoading("");
     }
   };
 
   const verifyOtp = async () => {
-    setLoading({ status: false, message: "" });
+    setLoading("");
     const code = otp.join("");
     if (timerRef.current) clearInterval(timerRef.current);
     settimer(0);
@@ -127,9 +127,8 @@ const Profile = () => {
       }
     } catch (error) {
       showMessage("OTP Verification failed!", "#ff0000");
-
     } finally {
-      setLoading({ status: false, message: "" });
+      setLoading("");
     }
   };
 
@@ -141,8 +140,8 @@ const Profile = () => {
     if (res.status == 200) {
       setUserData(res.data);
       setAboutMe(res.data.bio || "");
-    }else{
-      showMessage("Error fetching user data","#ff0000")
+    } else {
+      showMessage("Error fetching user data", "#ff0000");
     }
   };
 
@@ -154,11 +153,11 @@ const Profile = () => {
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    setLoading({ status: true, message: "imageupload" });
+    setLoading("imageupload");
     try {
       const res = await Functions.handleImageUpload(file);
-      const data= res.data;
-     await axios.put(
+      const data = res.data;
+      await axios.put(
         `${import.meta.env.VITE_BASE_URL}/api/users`,
         { ...UserData, profilePic: data.secure_url },
         {
@@ -174,11 +173,13 @@ const Profile = () => {
       console.error("Image upload failed:", err);
       showMessage("Image upload failed.", "#e3101e");
     } finally {
-      setLoading({ status: false, message: "" });
+      setLoading("" );
     }
   };
 
   const handleUpdateProfile = async () => {
+    setLoading("updateprofile");
+
     try {
       const res = await axios.put(
         `${import.meta.env.VITE_BASE_URL}/api/users`,
@@ -200,6 +201,8 @@ const Profile = () => {
     } catch (error) {
       console.error(error);
       showMessage("Failed to update profile", "#e3101e");
+    } finally {
+      setLoading("");
     }
   };
 
@@ -207,6 +210,8 @@ const Profile = () => {
         PASSWORD FUNCTIONS
   ============================ */
   const handleUpdatePassword = async () => {
+    setLoading("updatepass");
+
     const oldPassword = Verified
       ? "isVerified"
       : document.getElementById("oldPassword").value;
@@ -228,6 +233,8 @@ const Profile = () => {
         error.response?.data?.message || "Failed to update password",
         "#ff0000"
       );
+    } finally {
+      setLoading("");
     }
   };
 
@@ -243,7 +250,7 @@ const Profile = () => {
       showMessage("Please enter your password.", "#ff0000");
       return;
     }
-    setLoading({ status: true, message: "deleteaccount" });
+    setLoading("deleteaccount");
     try {
       await axios.delete(
         `${import.meta.env.VITE_BASE_URL}/api/users/${UserData._id}`,
@@ -262,7 +269,7 @@ const Profile = () => {
         "#ff0000"
       );
     } finally {
-      setLoading({ status: false, message: "" });
+      setLoading("");
       setShowDeleteBox(false);
       setDeleteText("");
       setDeletePassword("");
@@ -273,7 +280,7 @@ const Profile = () => {
         EFFECTS
   ============================ */
   useEffect(() => {
-    if (user) fetchingUser();
+    if (user) setUserData(user);
   }, [user]);
 
   const modules = {
@@ -322,10 +329,10 @@ const Profile = () => {
               </button>
               <button
                 onClick={confirmDeleteAccount}
-                disabled={loading.message == "deleteaccount"}
+                disabled={loading == "deleteaccount"}
                 className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 flex items-center gap-2"
               >
-                {loading.message == "deleteaccount" && (
+                {loading == "deleteaccount" && (
                   <AiOutlineLoading3Quarters className="animate-spin" />
                 )}
                 Delete
@@ -376,10 +383,10 @@ const Profile = () => {
               {!(timer > 0) ? (
                 <button
                   onClick={handleForgotPassword}
-                  disabled={timer > 0 || loading.message == "sendingotp"}
+                  disabled={timer > 0 || loading == "sendingotp"}
                   className="text-blue-500 hover:underline disabled:opacity-50"
                 >
-                  {loading.message == "sendingotp"
+                  {loading == "sendingotp"
                     ? "Resending..."
                     : "Resend OTP"}
                 </button>
@@ -388,10 +395,10 @@ const Profile = () => {
               )}
               <button
                 onClick={verifyOtp}
-                disabled={loading.message == "verifyingotp"}
+                disabled={loading == "verifyingotp"}
                 className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 flex items-center gap-2"
               >
-                {loading.message == "verifyingotp" && (
+                {loading == "verifyingotp" && (
                   <AiOutlineLoading3Quarters className="animate-spin" />
                 )}
                 Verify
@@ -427,7 +434,7 @@ const Profile = () => {
               src={UserData?.profilePic}
               alt={UserData?.username}
             />
-            {loading.message == "imageupload" ? (
+            {loading == "imageupload" ? (
               <AiOutlineLoading3Quarters className="absolute -bottom-2 -right-6 sm:-right-8 cursor-pointer animate-spin text-xl" />
             ) : (
               <label htmlFor="profileImageUpload">
@@ -443,7 +450,7 @@ const Profile = () => {
               type="file"
               id="profileImageUpload"
               accept="image/*"
-              className="hidden"
+              className="hidden rounded-xl"
               onChange={handleImageUpload}
             />
           </div>
@@ -463,7 +470,7 @@ const Profile = () => {
                 id="name"
                 value={UserData?.name || ""}
                 onChange={handleInputChange}
-                className="w-full sm:w-[350px] p-3 text-gray-700 dark:text-gray-300 border-b outline-none"
+                className="w-full sm:w-[350px] p-3 rounded-xl text-gray-700 dark:text-gray-300 border-b outline-none"
                 placeholder="Enter your name..."
               />
             </div>
@@ -482,7 +489,7 @@ const Profile = () => {
                 id="username"
                 value={UserData?.username || ""}
                 onChange={handleInputChange}
-                className="w-full sm:w-[350px] p-3 text-gray-700 dark:text-gray-300 border-b outline-none"
+                className="w-full sm:w-[350px] p-3 rounded-xl text-gray-700 dark:text-gray-300 border-b outline-none"
                 placeholder="Enter your username..."
               />
             </div>
@@ -501,7 +508,7 @@ const Profile = () => {
                 id="email"
                 value={UserData?.email || ""}
                 onChange={handleInputChange}
-                className="w-full sm:w-[350px] p-3 text-gray-700 dark:text-gray-300 border-b outline-none"
+                className="w-full sm:w-[350px] p-3 rounded-xl text-gray-700 dark:text-gray-300 border-b outline-none"
                 placeholder="Enter your email..."
               />
             </div>
@@ -533,16 +540,18 @@ const Profile = () => {
 
           <div className="flex flex-col-reverse sm:flex-row items-center justify-between w-full max-w-xl gap-3 my-4">
             <button
+            disabled={loading=="deleteaccount"}
               onClick={() => setShowDeleteBox(true)}
-              className="w-full sm:w-auto px-6 py-3 rounded-md hover:border-b border-red-500 text-red-500 font-semibold"
+              className="w-full  px-6 py-3 flex items-center justify-center rounded-md hover:border-b sm:w-[180px] h-[50px] border-red-500 text-red-500 font-semibold"
             >
-              Delete Account
+              {loading == "deleteaccount" ? <AiOutlineLoading size={25} className="animate-spin"/>:"Delete Account"}
             </button>
             <button
+            disabled={loading=="updateprofile"}
               onClick={handleUpdateProfile}
-              className="w-full sm:w-auto px-6 py-3 rounded-md hover:border-b border-green-500 text-green-500 font-semibold"
+              className="w-full  px-6 py-3 flex items-center justify-center rounded-md hover:border-b sm:w-[180px] h-[50px] border-green-500 text-green-500 font-semibold"
             >
-              Update Changes
+              {loading == "updateprofile" ? <AiOutlineLoading size={25} className="animate-spin"/>:"Update Changes"}
             </button>
           </div>
         </div>
@@ -599,7 +608,7 @@ const Profile = () => {
                 type={passwordView[1] ? "text" : "password"}
                 name="newPassword"
                 id="newPassword"
-                className="w-[350px] p-3 text-gray-700 dark:text-gray-300 border-b outline-none"
+                className="w-[350px] p-3 rounded-xl text-gray-700 dark:text-gray-300 border-b outline-none"
                 placeholder="Enter your new password..."
               />
               {passwordView[1] ? (
@@ -631,11 +640,11 @@ const Profile = () => {
               </button>
             )}
             <button
-              className="px-6 py-3 mt-5 rounded-md hover:border-b border-blue-500 text-blue-500 font-semibold"
+              className="px-6 py-3 mt-5 flex items-center justify-center rounded-md hover:border-b border-blue-500 text-blue-500 font-semibold"
               type="button"
               onClick={handleUpdatePassword}
             >
-              Update Password
+              {loading == "updatepass" ? <AiOutlineLoading size={25} className="animate-spin"/>:"Update Password"}
             </button>
           </div>
         </div>

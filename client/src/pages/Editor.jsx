@@ -9,13 +9,14 @@ import { UploadCloud, X } from "lucide-react";
 import { useMessage } from "../context/MessageContext";
 import useAuth from "../context/Auth";
 import { useTitle } from "../context/DynamicTitle";
+import { AiOutlineLoading } from "react-icons/ai";
 
 const CreatePost = () => {
   const navigate = useNavigate();
   const { postId } = useParams();
   const { showMessage } = useMessage();
   const { user } = useAuth();
-  
+
   // -------------------- State --------------------
   const [postData, setPostData] = useState({
     title: "",
@@ -24,11 +25,12 @@ const CreatePost = () => {
     coverImage: "",
     coverImageId: "",
   });
-  useTitle(postData?.title ? `${postData.title} ` : "Edit Post ")
+  useTitle(postData?.title ? `${postData.title} ` : "Edit Post ");
 
   const [preview, setPreview] = useState(null);
   const [selectedTags, setSelectedTags] = useState([]);
   const [loading, setLoading] = useState({ uploading: false, deleting: false });
+  const [publishing, setpublishing] = useState(true);
 
   // -------------------- Handlers --------------------
   const handleChange = (field, value) => {
@@ -118,7 +120,7 @@ const CreatePost = () => {
       showMessage("Please select at least one tag.", "#2d2e2e");
       return;
     }
-
+    setLoading(true);
     const post = {
       author: user._id,
       title,
@@ -162,14 +164,19 @@ const CreatePost = () => {
           });
           setPreview(null);
           setSelectedTags([]);
+          navigate(`/${postId}`);
+        }else{
+
+          navigate("/home");
         }
-        navigate("/home");
       } else {
         showMessage(result.message, "#e3101e");
       }
     } catch (error) {
       console.error("Failed to save post:", error);
       showMessage("Failed to save post.", "#e3101e");
+    } finally {
+      setpublishing(false);
     }
   };
 
@@ -217,7 +224,7 @@ const CreatePost = () => {
           value={postData.title}
           onChange={(e) => handleChange("title", e.target.value)}
           placeholder="Title"
-          className="w-full text-4xl font-bold bg-transparent border-b outline-none placeholder:text-gray-300 placeholder:dark:text-gray-900"
+          className="w-full text-4xl rounded-xl font-bold bg-transparent border-b outline-none placeholder:text-gray-300 placeholder:dark:text-gray-900"
         />
 
         {/* Description */}
@@ -263,7 +270,7 @@ const CreatePost = () => {
                 type="file"
                 accept="image/*"
                 onChange={handleImageUpload}
-                className="hidden"
+                className="hidden rounded-xl"
                 disabled={loading.uploading || postData.coverImage}
               />
             </label>
@@ -319,9 +326,9 @@ const CreatePost = () => {
         {/* Submit */}
         <button
           type="submit"
-          className="bg-black dark:bg-white px-6 py-2 rounded text-white dark:text-black transition"
+          className="bg-black dark:bg-white px-6 py-2 flex items-center justify-center gap-4 rounded text-white dark:text-black transition"
         >
-          {postId ? "Update Post" : "Publish Post"}
+          {postId ? <>Update Post  {publishing && <AiOutlineLoading size={25} className="animate-spin"/>}</> : <>Publish Post {publishing && <AiOutlineLoading size={25} className="animate-spin"/>}</>}
         </button>
       </form>
     </div>

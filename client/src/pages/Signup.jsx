@@ -117,21 +117,21 @@ const Signup = () => {
             placeholder="Enter your full name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="input-field"
+            className="input-field rounded-xl"
           />
           <input
             type="text"
             placeholder="Enter a username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className="input-field"
+            className="input-field rounded-xl"
           />
           <input
             type="email"
             placeholder="Enter your email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="input-field"
+            className="input-field rounded-xl"
           />
           <div className="relative mb-4">
             <input
@@ -139,7 +139,7 @@ const Signup = () => {
               placeholder="Enter password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="input-field pr-10"
+              className="input-field pr-10 rounded-xl"
             />
             <div
               className="absolute right-3 top-[22px] translate-y-[-50%] cursor-pointer text-gray-400"
@@ -166,7 +166,7 @@ const Signup = () => {
             placeholder="Enter OTP"
             value={otp}
             onChange={(e) => setOtp(e.target.value)}
-            className="input-field"
+            className="input-field rounded-xl"
           />
           <button
             onClick={verifyOtp}

@@ -41,13 +41,13 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className="fixed top-0 left-0 w-full z-50 backdrop-blur- dark:bg-black/70 border-b border-gray-400/30 dark:border-white/10 m-0 p-0 flex items-center justify-center">
+    <nav className="fixed top-0 left-0 w-full z-50 backdrop-blur-sm dark:bg-black/40 border-b border-gray-400/30 dark:border-white/10 m-0 p-0 flex items-center justify-center">
       {isSearch && (
         <div className="flex bg-white/50 dark:bg-black border border-[#5f5f5f] px-4 z-10 py-2 rounded-3xl items-center absolute sm:top-2 top-16">
           <CiSearch size={20} strokeWidth={0.5} />
           <input
             ref={searchInputRef}
-            className="w-[250px]  ml-2 outline-none placeholder-gray-600 dark:placeholder-gray-400"
+            className="w-[250px] rounded-xl ml-2 outline-none placeholder-gray-600 dark:placeholder-gray-400"
             placeholder="Search..."
             type="search"
             value={searchParam}
@@ -107,7 +107,7 @@ const Navbar = () => {
               className="w-9 h-9 rounded-full cursor-pointer object-cover border border-white/20"
             />
             {dashBoard && (
-              <div className="absolute right-0 top-12 text-white dark:text-black mt-2 sm:w-64 w-54 bg-black  dark:bg-white backdrop border border-black/10 dark:border-white/10 rounded-xl px-4 py-5 z-50">
+              <div className="absolute right-0 top-12 text-white dark:text-black mt-2 sm:w-64 w-54 bg-black  dark:bg-white  border border-black/10 dark:border-white/10 rounded-xl px-4 py-5 z-50">
                 <ul className="flex flex-col gap-3">
                   {/* Profile, Theme, Help, Settings, Admin GitHub */}
                   <Link
