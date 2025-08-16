@@ -149,13 +149,13 @@ const Home = () => {
       if (followingIds.includes(toId)) {
         // Unfollow
         res = await Functions.handleUnFollow(toId);
-        if (res.statusText === "OK") {
+        if (res.status == 200) {
           setFollowingIds((prev) => prev.filter((id) => id !== toId));
         }
       } else {
         // Follow
         res = await Functions.handleFollow(toId);
-        if (res.statusText === "OK") {
+        if (res.status == 200) {
           setFollowingIds((prev) => [...prev, toId]);
         }
       }

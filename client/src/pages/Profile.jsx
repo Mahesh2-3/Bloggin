@@ -138,7 +138,7 @@ const Profile = () => {
   ============================ */
   const fetchingUser = async () => {
     const res = await Functions.fetchUser(user?._id);
-    if (res.statusText === "OK") {
+    if (res.status == 200) {
       setUserData(res.data);
       setAboutMe(res.data.bio || "");
     }else{

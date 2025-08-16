@@ -76,12 +76,12 @@ const UserPage = () => {
   const FollowUser = async (toId) => {
     if (IsFollowing) {
       const res = await Functions.handleUnFollow(toId);
-      if (res.statusText == "OK") {
+      if (res.status == 200) {
         setIsFollowing(false);
       }
     } else {
       const res = await Functions.handleFollow(toId);
-      if (res.statusText == "OK") {
+      if (res.status == 200) {
         setIsFollowing(true);
       }
     }

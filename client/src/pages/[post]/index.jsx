@@ -78,7 +78,7 @@ const PostPage = () => {
     setCommentMenu(false);
     const res = await Functions.handleDeleteComment(comment_id);
     fetchComments();
-    if (res.statusText == "OK") {
+    if (res.status == 200) {
       showMessage("Successfully Deleted Comment", "#00b300");
     } else {
       showMessage("Error deleting Comment", "#ff0000");
@@ -112,12 +112,12 @@ const PostPage = () => {
   const FollowUser = async (toId) => {
     if (Following) {
       const res = await Functions.handleUnFollow(toId);
-      if (res.statusText == "OK") {
+      if (res.status == 200) {
         setFollowing(false);
       }
     } else {
       const res = await Functions.handleFollow(toId);
-      if (res.statusText == "OK") {
+      if (res.status == 200) {
         setFollowing(true);
       }
     }
@@ -127,7 +127,7 @@ const PostPage = () => {
   const onLikeClick = async () => {
     const result = await Functions.handleLike(postId); // Await result
     console.log(result)
-    if (result.statusText == "OK") {
+    if (result.status == 200) {
       setLiked(result.data.liked); // Set correct like state from response
       setLikeCount(result.data.likeCount);
     }else{
@@ -145,7 +145,7 @@ const PostPage = () => {
     fetchComments();
     const likeStatus = async () => {
       const result = await Functions.getLikeStatus(postId);
-      if (result.statusText == "OK") {
+      if (result.status == 200) {
         setLiked(result.data.liked); // Set correct like state from response
         setLikeCount(result.data.likeCount);
       }

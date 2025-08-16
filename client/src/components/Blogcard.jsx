@@ -18,7 +18,7 @@ const Blogcard = ({ blog }) => {
 
   const onLikeClick = async () => {
     const result = await Functions.handleLike(blog?._id); // Await result
-    if (result.statusText == "OK") {
+    if (result.status == 200) {
       setlikeStatus(result.data.liked); // Set correct like state from response
       setlikeCount(result.data.likeCount); // Update like count
     }
