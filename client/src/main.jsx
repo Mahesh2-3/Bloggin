@@ -7,6 +7,7 @@ import SearchParamProvider from "./context/Searchparam";
 import { ThemeProvider } from './context/ThemeContext.jsx';
 import { ClickSparkWrapper } from './animations/ClickSparkWrapper.jsx';
 import { MessageProvider } from './context/MessageContext.jsx';
+import { PostsProvider } from './components/PostsContext.jsx';
 
 
 
@@ -17,7 +18,9 @@ createRoot(document.getElementById('root')).render(
         <ClickSparkWrapper>
           <SearchParamProvider>
             <MessageProvider>
+            <PostsProvider>
               <App />
+              </PostsProvider>
             </MessageProvider>
           </SearchParamProvider>
         </ClickSparkWrapper>

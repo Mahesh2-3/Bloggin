@@ -8,14 +8,16 @@ import useAuth from "../context/Auth";
 import Blogcard from "../components/Blogcard";
 import Functions from "../components/Functions";
 import { useTitle } from "../context/DynamicTitle";
+import { usePosts } from "../components/PostsContext";
 
 const Home = () => {
   useTitle("Home ");
 
   const { user, login, logout } = useAuth();
-  const [posts, setPosts] = useState([]);
+  const { posts, postLoading } = usePosts();
   const [presentKey, setPresentKey] = useState("All");
   const [allUsers, setallUsers] = useState([]);
+  const [loading, setloading] = useState(false);
   const [followingIds, setFollowingIds] = useState(user?.following || []);
   // Add this above return:
   const keywordRefs = useRef({});
@@ -45,7 +47,7 @@ const Home = () => {
   const finalPosts = [...unlikedPosts, ...likedPosts];
 
   const tryNew = posts
-    .filter((post)=> post.author._id !== user?._id)
+    .filter((post) => post.author._id !== user?._id)
     .sort((a, b) => {
       const getLowestLikedTagValue = (tags) => {
         if (!tags || !Array.isArray(tags)) return 0;
@@ -109,24 +111,18 @@ const Home = () => {
 
   // Fetch posts and setup scroll event on mount
   const fetchPosts = async () => {
+    setloading(true);
     try {
-      const res = await fetch(`${import.meta.env.VITE_BASE_URL}/api/posts`, {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      });
-
-      if (!res.ok) throw new Error("Failed to fetch posts");
       if (user) {
         const response1 = await Functions.fetchUser(user?._id);
         login(response1.data);
         const response2 = await Functions.getAllUsers();
         setallUsers(response2.data);
       }
-
-      const data = await res.json();
-      setPosts(data);
     } catch (error) {
       console.error("Error fetching posts:", error);
+    } finally {
+      setloading(false);
     }
   };
 
@@ -229,7 +225,7 @@ const Home = () => {
                 .map((post) => <Blogcard key={post._id} blog={post} />)
             ) : (
               <div className="mt-10 mx-auto w-fit text-gray-700 dark:text-gray-300">
-                No Posts Found
+                {postLoading ? "Loading Posts..." : "No Posts Found"}
               </div>
             )}
           </div>
@@ -271,7 +267,7 @@ const Home = () => {
             ))}
             {tryNew.length == 0 && (
               <div className="p-5 text-gray-600 dark:text-gray-400">
-                No Posts Found
+                {postLoading ? "Loading Posts..." : "No Posts Found"}
               </div>
             )}
           </div>

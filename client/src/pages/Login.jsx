@@ -7,6 +7,7 @@ import UseAuth from "../context/Auth";
 import { useEffect } from "react";
 import { useMessage } from "../context/MessageContext";
 import { useTitle } from "../context/DynamicTitle";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 const Login = () => {
   useTitle("Login ")
@@ -186,9 +187,9 @@ const Login = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-700 transition-all py-2 rounded-md font-medium"
+            className="w-full bg-blue-600 hover:bg-blue-700 transition-all py-2 h-[50px] flex items-center justify-center rounded-md font-medium"
           >
-            Login
+            {loading ? <AiOutlineLoading3Quarters size={20} stroke="2" className="animate-spin"/> :"Login"}
           </button>
         </form>
 
