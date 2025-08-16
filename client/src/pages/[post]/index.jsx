@@ -46,7 +46,7 @@ const PostPage = () => {
 
   const fetchComments = async () => {
     const res = await Functions.handleGetComments(postId);
-    if (res.statusText != "OK") {
+    if (res.status != 200) {
       showMessage("Error fetching data!", "#ff0000");
       return;
     }
