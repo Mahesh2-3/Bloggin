@@ -1,7 +1,7 @@
 const Post = require('../models/Post');
 const User = require('../models/User');
 const comment = require("../models/Comment")
-const like = require("../models/like")
+const like = require("../models/Like")
 
 const updateUserPostsArray = async (userId) => {
   try {
