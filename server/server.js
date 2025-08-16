@@ -58,7 +58,7 @@ app.get("/", (req, res) => {
 });
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/users", require("./routes/users"));
-app.use("/api/posts", require("./routes/Posts"));
+app.use("/api/posts", require("./routes/posts"));
 app.use("/api/comments", require("./routes/comments"));
 app.use("/api/likes", require("./routes/likes"));
 app.use("/api/upload", require("./routes/upload"));

@@ -1,4 +1,4 @@
-const Comment = require('../models/comment');
+const Comment = require('../models/Comment');
 const Post = require('../models/post'); // import Post model
 
 // Add a comment
