@@ -126,6 +126,7 @@ const PostPage = () => {
 
   const onLikeClick = async () => {
     const result = await Functions.handleLike(postId); // Await result
+    console.log(result)
     if (result.statusText == "OK") {
       setLiked(result.data.liked); // Set correct like state from response
       setLikeCount(result.data.likeCount);
