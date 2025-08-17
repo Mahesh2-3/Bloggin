@@ -1,12 +1,13 @@
 import { useRef, useEffect } from "react";
 import { gsap } from "gsap";
 import { SplitText as GSAPSplitText } from "gsap/SplitText";
+import "../index.css"
 
 gsap.registerPlugin(GSAPSplitText);
 
 const SplitText = ({
   text,
-  className = "",
+  className = "font-main",
   delay = 100,
   duration = 0.6,
   ease = "power3.out",
@@ -80,7 +81,7 @@ const SplitText = ({
   return (
     <p
       ref={ref}
-      className={`split-parent ${className}`}
+      className={`split-parent ${className} main-font`}
       style={{
         textAlign,
         display: "inline-block",

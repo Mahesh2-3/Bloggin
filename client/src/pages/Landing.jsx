@@ -26,7 +26,7 @@ const Landing = () => {
       {/* Foreground Content */}
       <div className="relative z-10 xl:w-[60%] md:w-[75%] mx-auto w-full h-full p-4">
         <div className="w-full py-5 flex items-center justify-between">
-          <div className="main-font  text-5xl">Bloggin'</div>
+          <div className="main-font text-5xl">Bloggin'</div>
           <div className="flex gap-3">
             <Link to="/signup">
               <button className="bg-black dark:bg-white hover:scale-110 transition-all ease-in-out duration-200 sm:w-[125px] w-[75px] flex items-center justify-center py-2 sm:font-bold font-semibold sm:text-base text-sm rounded-4xl text-white border-1 border-gray-400 dark:text-black">

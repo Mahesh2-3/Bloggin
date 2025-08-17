@@ -182,12 +182,12 @@ const Signup = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black flex flex-col items-center justify-center pb-30 gap-10 relative px-4">
+    <div className="min-h-screen font-normal bg-black flex flex-col items-center justify-center pb-30 gap-10 relative px-4">
       <div className="absolute inset-0 [background:radial-gradient(125%_125%_at_50%_10%,#000_40%,#63e_100%)]"></div>
 
       <SplitText
         text={`Bloggin'`}
-        className="sm:text-[126px] text-[90px] select-none font-semibold main-font text-white"
+        className="sm:text-[126px] text-[90px] select-none font-semibold  text-white"
         delay={100}
         duration={0.6}
         ease="power3.out"
