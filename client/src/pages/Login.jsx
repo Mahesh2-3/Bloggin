@@ -91,7 +91,7 @@ const Login = () => {
       {/* Heading Animation */}
       <SplitText
         text="Welcome Back!"
-        className="md:absolute relative sm:top-20 top-5 md:text-[126px] sm:text-[100px] text-[60px] select-none font-semibold font-main text-white text-start"
+        className="md:absolute relative sm:top-20 top-5 md:text-[126px] sm:text-[100px] text-[60px] select-none font-semibold main-font text-white text-start"
         delay={100}
         duration={0.6}
         ease="power3.out"

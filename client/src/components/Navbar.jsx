@@ -56,7 +56,7 @@ const Navbar = () => {
         </div>
       )}
       <div className="flex justify-between items-center w-full px-4 md:px-6 py-3 border-b border-gray-400/30 dark:border-white/10 text-black dark:text-white relative">
-        <Link to="/home" className="font-bold font-main text-2xl sm:text-3xl">
+        <Link to="/home" className="font-bold main-font text-2xl sm:text-3xl">
           Bloggin'
         </Link>
 
