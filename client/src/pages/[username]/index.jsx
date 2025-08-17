@@ -96,6 +96,10 @@ const FollowUser = async (toId) => {
     }
   } catch (err) {
     setIsFollowing((prev) => !prev);
+  }finally{
+    fetchUser()
+        refreshPosts()
+
   }
 };
 

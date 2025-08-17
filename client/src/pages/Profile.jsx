@@ -174,7 +174,7 @@ const Profile = () => {
       console.error("Image upload failed:", err);
       showMessage("Image upload failed.", "#e3101e");
     } finally {
-      setLoading("" );
+      setLoading("");
     }
   };
 
@@ -281,10 +281,10 @@ const Profile = () => {
         EFFECTS
   ============================ */
   useEffect(() => {
-    if (user){
+    if (user) {
       setUserData(user);
       setAboutMe(user.bio);
-    };
+    }
   }, [user]);
 
   const modules = {
@@ -390,9 +390,7 @@ const Profile = () => {
                   disabled={timer > 0 || loading == "sendingotp"}
                   className="text-blue-500 hover:underline disabled:opacity-50"
                 >
-                  {loading == "sendingotp"
-                    ? "Resending..."
-                    : "Resend OTP"}
+                  {loading == "sendingotp" ? "Resending..." : "Resend OTP"}
                 </button>
               ) : (
                 <span className="text-gray-500">Resend otp in {timer} sec</span>
@@ -433,7 +431,7 @@ const Profile = () => {
         <div className="flex flex-col sm:items-center items-center justify-center mt-10 px-4">
           <div className="relative">
             <img
-              className="w-24 h-24 sm:w-32 sm:h-32 rounded-full object-contain"
+              className="w-24 h-24 sm:w-32 sm:h-32 rounded-full object-cover"
               referrerPolicy="no-referrer"
               src={UserData?.profilePic}
               alt={UserData?.username}
@@ -511,9 +509,9 @@ const Profile = () => {
                 name="email"
                 id="email"
                 value={UserData?.email || ""}
-                onChange={handleInputChange}
-                className="w-full sm:w-[350px] p-3 text-gray-700 dark:text-gray-300 border-b outline-none"
+                className="w-full sm:w-[350px] p-3 text-gray-400 dark:text-gray-500  outline-none bg-gray-300 dark:bg-[#222222af] rounded-lg cursor-not-allowed"
                 placeholder="Enter your email..."
+                disabled
               />
             </div>
 
@@ -544,18 +542,26 @@ const Profile = () => {
 
           <div className="flex flex-col-reverse sm:flex-row items-center justify-between w-full max-w-xl gap-3 my-4">
             <button
-            disabled={loading=="deleteaccount"}
+              disabled={loading == "deleteaccount"}
               onClick={() => setShowDeleteBox(true)}
               className="w-full  px-6 py-3 flex items-center justify-center rounded-md hover:border-b sm:w-[180px] h-[50px] border-red-500 text-red-500 font-semibold"
             >
-              {loading == "deleteaccount" ? <AiOutlineLoading size={25} className="animate-spin"/>:"Delete Account"}
+              {loading == "deleteaccount" ? (
+                <AiOutlineLoading size={25} className="animate-spin" />
+              ) : (
+                "Delete Account"
+              )}
             </button>
             <button
-            disabled={loading=="updateprofile"}
+              disabled={loading == "updateprofile"}
               onClick={handleUpdateProfile}
               className="w-full  px-6 py-3 flex items-center justify-center rounded-md hover:border-b sm:w-[180px] h-[50px] border-green-500 text-green-500 font-semibold"
             >
-              {loading == "updateprofile" ? <AiOutlineLoading size={25} className="animate-spin"/>:"Update Changes"}
+              {loading == "updateprofile" ? (
+                <AiOutlineLoading size={25} className="animate-spin" />
+              ) : (
+                "Update Changes"
+              )}
             </button>
           </div>
         </div>
@@ -648,7 +654,11 @@ const Profile = () => {
               type="button"
               onClick={handleUpdatePassword}
             >
-              {loading == "updatepass" ? <AiOutlineLoading size={25} className="animate-spin"/>:"Update Password"}
+              {loading == "updatepass" ? (
+                <AiOutlineLoading size={25} className="animate-spin" />
+              ) : (
+                "Update Password"
+              )}
             </button>
           </div>
         </div>

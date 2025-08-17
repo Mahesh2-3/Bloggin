@@ -7,7 +7,6 @@ export const PostsProvider = ({ children }) => {
   const [postLoading, setLoading] = useState(false);
 
   const fetchPosts = async () => {
-    if (posts.length > 0) return; // prevent re-fetch
     setLoading(true);
     try {
       const res = await fetch(`${import.meta.env.VITE_BASE_URL}/api/posts`);
@@ -23,10 +22,11 @@ export const PostsProvider = ({ children }) => {
   }, []);
 
   return (
-    <PostsContext.Provider value={{ posts, postLoading }}>
+    <PostsContext.Provider value={{ posts, postLoading, refreshPosts: fetchPosts }}>
       {children}
     </PostsContext.Provider>
   );
 };
+
 
 export const usePosts = () => useContext(PostsContext);

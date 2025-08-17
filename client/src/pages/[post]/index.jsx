@@ -17,11 +17,13 @@ import { FiEdit3 } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { useTitle } from "../../context/DynamicTitle";
 import { AiOutlineLoading } from "react-icons/ai";
+import { usePosts } from "../../components/PostsContext";
 
 const PostPage = () => {
   const navigate = useNavigate();
   const { postId } = useParams();
   const { user } = useAuth();
+  const { refreshPosts } = usePosts();
   const [PostData, setPostData] = useState(null);
   const [liked, setLiked] = useState(false);
   const [Following, setFollowing] = useState(false);
@@ -83,6 +85,7 @@ const PostPage = () => {
       showMessage("Error adding Comment", "#ff0000");
     }
     setloading("");
+    refreshPosts();
   };
 
   const deleteComment = async (comment_id) => {
@@ -96,6 +99,7 @@ const PostPage = () => {
       showMessage("Error deleting Comment", "#ff0000");
     }
     setloading("");
+    refreshPosts();
   };
 
   const editComment = (comment) => {
@@ -142,6 +146,9 @@ const PostPage = () => {
       }
     } catch (err) {
       setFollowing((prev) => !prev);
+    } finally {
+      fetchPost();
+      refreshPosts();
     }
   };
 
@@ -160,6 +167,8 @@ const PostPage = () => {
       // Revert if request fails
       setLiked((prev) => !prev);
       setLikeCount((prev) => prev + (liked ? 1 : -1));
+    } finally {
+      refreshPosts();
     }
   };
   useEffect(() => {
@@ -221,12 +230,14 @@ const PostPage = () => {
                     </span>
                   </div>
                 </div>
-                <button
-                  onClick={() => FollowUser(PostData?.author?._id)}
-                  className="mt-2 sm:mt-0 px-4 py-1 text-sm sm:text-md bg-black dark:bg-white text-white dark:text-black rounded-full border border-gray-800 dark:border-gray-300 hover:opacity-80 transition"
-                >
-                  {Following ? "Un Follow" : "Follow"}
-                </button>
+                {!(PostData?.author._id == user?._id) && (
+                  <button
+                    onClick={() => FollowUser(PostData?.author?._id)}
+                    className="mt-2 sm:mt-0 px-4 py-1 text-sm sm:text-md bg-black dark:bg-white text-white dark:text-black rounded-full border border-gray-800 dark:border-gray-300 hover:opacity-80 transition"
+                  >
+                    {Following ? "Un Follow" : "Follow"}
+                  </button>
+                )}
               </div>
 
               <div className="flex gap-4 text-sm text-gray-600 dark:text-gray-400">
@@ -237,7 +248,7 @@ const PostPage = () => {
             {PostData?.author._id == user?._id && (
               <div className="flex gap-2 items-center justify-end">
                 <Link to={`/edit/${PostData?._id}`}>
-                  <button className="group flex items-center bg-white text-black px-3 py-2 rounded-full transition-all gap-2 duration-300 lg:hover:px-5">
+                  <button className="group flex items-center dark:bg-white bg-black dark:text-black text-white px-3 py-2 rounded-full transition-all gap-2 duration-300 lg:hover:px-5">
                     <FiEdit3 className="text-lg transition-transform duration-500" />
                     <span
                       className="ml-2 text-sm whitespace-nowrap transition-all duration-500 
@@ -250,7 +261,7 @@ const PostPage = () => {
                 </Link>
                 <button
                   onClick={() => setShowDeleteModal(true)}
-                  className="group flex items-center bg-white text-black px-3 py-2 rounded-full transition-all gap-2 duration-300 lg:hover:px-5"
+                  className="group flex items-center dark:bg-white bg-black dark:text-black text-white px-3 py-2 rounded-full transition-all gap-2 duration-300 lg:hover:px-5"
                 >
                   <MdOutlineDelete className="text-xl transition-transform duration-500" />
                   <span
@@ -318,7 +329,7 @@ const PostPage = () => {
             </div>
           </div>
           {commentsOpen && (
-            <div className="rounded-md text-black xl:relative absolute w-full sm:w-[400px] bg-white min-h-screen  top-42 xl:top-0 right-0 p-4 px-6">
+            <div className="rounded-md text-black xl:relative absolute w-full sm:w-[400px] bg-white border border-gray-500 min-h-screen overflow-y-auto  top-42 xl:top-0 right-0 p-4 px-6">
               <IoCloseOutline
                 onClick={() => {
                   setCommentsOpen(false);
@@ -399,7 +410,7 @@ const PostPage = () => {
                               </span>
                             )}
                           </div>
-                          <p className="text-sm dark:text-gray-700 text-gray-300">
+                          <p className="text-sm dark:text-gray-700 text-gray-500">
                             {comment.content}
                           </p>
                         </div>

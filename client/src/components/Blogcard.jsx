@@ -3,18 +3,20 @@ import { useEffect, useState } from "react";
 import { FaRegComment } from "react-icons/fa";
 import { GoNorthStar } from "react-icons/go";
 import { TiHeartFullOutline, TiHeartOutline } from "react-icons/ti";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Functions from "./Functions";
 import { useNavigate } from "react-router-dom";
-import useAuth from "../context/Auth";
+import { usePosts } from "./PostsContext";
 
 const Blogcard = ({ blog }) => {
   const navigate = useNavigate();
-  const { user, login, logout } = useAuth();
+  const { pathname } = useLocation();
+  const { refreshPosts } = usePosts();
 
   const isMobile = useMediaQuery("(max-width:640px)");
   const [likeStatus, setlikeStatus] = useState(false);
   const [likeCount, setlikeCount] = useState(blog?.likes.length || 0);
+  const isHome = pathname.includes("/home");
 
   const onLikeClick = async () => {
     setlikeStatus((prev) => !prev);
@@ -29,6 +31,9 @@ const Blogcard = ({ blog }) => {
     } catch (err) {
       setlikeStatus((prev) => !prev);
       setlikeCount((prev) => prev + (likeStatus ? 1 : -1));
+    }
+    if (!isHome) {
+      refreshPosts();
     }
   };
 
