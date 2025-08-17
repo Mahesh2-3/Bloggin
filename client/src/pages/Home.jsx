@@ -139,29 +139,41 @@ const Home = () => {
     };
   }, []);
 
-  const FollowUser = async (toId) => {
-    try {
-      let res;
-      if (followingIds.includes(toId)) {
-        // Unfollow
-        res = await Functions.handleUnFollow(toId);
-        if (res.status == 200) {
-          setFollowingIds((prev) => prev.filter((id) => id !== toId));
-        }
-      } else {
-        // Follow
-        res = await Functions.handleFollow(toId);
-        if (res.status == 200) {
-          setFollowingIds((prev) => [...prev, toId]);
-        }
+const FollowUser = async (toId) => {
+  if (followingIds.includes(toId)) {
+    setFollowingIds((prev) => prev.filter((id) => id !== toId));
+  } else {
+    setFollowingIds((prev) => [...prev, toId]);
+  }
+
+  try {
+    let res;
+    if (followingIds.includes(toId)) {
+      res = await Functions.handleUnFollow(toId);
+      if (res.status !== 200) {
+        setFollowingIds((prev) => [...prev, toId]);
       }
-    } catch (error) {
-      console.error("Follow/Unfollow error:", error);
+    } else {
+      // Follow
+      res = await Functions.handleFollow(toId);
+      if (res.status !== 200) {
+        setFollowingIds((prev) => prev.filter((id) => id !== toId));
+      }
     }
-  };
+  } catch (error) {
+    console.error("Follow/Unfollow error:", error);
+
+    if (followingIds.includes(toId)) {
+      setFollowingIds((prev) => [...prev, toId]);
+    } else {
+      setFollowingIds((prev) => prev.filter((id) => id !== toId));
+    }
+  }
+};
+
 
   return (
-    <div className="w-full min-h-screen overflow-auto pt-[70px] bg-white dark:bg-black text-black dark:text-white">
+    <div className="w-full min-h-screen sm:overflow-auto overflow-hidden  pt-[70px] bg-white dark:bg-black text-black dark:text-white">
       <Navbar />
 
       <div className="lg:w-[60%] w-full flex mx-auto px-4 h-[1000px] ">
@@ -170,7 +182,7 @@ const Home = () => {
             {showLeftArrow && (
               <button
                 onClick={scrollLeft}
-                className="absolute left-0 z-10 h-fit sm:top-8 top-4 px-2 bg-white/80 py-2 dark:bg-black backdrop-blur-md rounded-r-md flex items-center"
+                className="absolute left-0 z-10 h-fit sm:top-8 top-3 px-2 bg-white/80 py-2 dark:bg-black backdrop-blur-md rounded-r-md flex items-center"
               >
                 <FaChevronLeft className="text-xl text-gray-400" />
               </button>
@@ -199,7 +211,7 @@ const Home = () => {
             {showRightArrow && (
               <button
                 onClick={scrollRight}
-                className="absolute right-0 sm:top-8 top-4 z-10 h-fit px-2 bg-white/80 py-2 dark:bg-black backdrop-blur-md rounded-l-md flex items-center"
+                className="absolute right-0 sm:top-8 top-3 z-10 h-fit px-2 bg-white/80 py-2 dark:bg-black backdrop-blur-md rounded-l-md flex items-center"
               >
                 <FaChevronRight className="text-xl text-gray-400" />
               </button>

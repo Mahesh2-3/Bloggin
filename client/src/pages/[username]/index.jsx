@@ -7,6 +7,7 @@ import Functions from "../../components/Functions";
 import { FiEdit3 } from "react-icons/fi";
 import Blogcard from "../../components/Blogcard";
 import { useTitle } from "../../context/DynamicTitle";
+import { AiOutlineLoading } from "react-icons/ai";
 
 const UserPage = () => {
   const { username } = useParams();
@@ -19,9 +20,11 @@ const UserPage = () => {
   const [Followers, setFollowers] = useState([]);
   const [Following, setFollowing] = useState([]);
   const [NotFound, setNotFound] = useState(false);
+  const [postLoading, setpostLoading] = useState(false)
   useTitle(`${userData?.name} `)
   
   const fetchUser = async () => {
+    setpostLoading(true);
     try {
       const res = await axios.get(
         `${import.meta.env.VITE_BASE_URL}/api/users/${username}`,
@@ -70,23 +73,32 @@ const UserPage = () => {
         setNotFound(true);
       }
       console.error("Failed to fetch user data", err.status);
+    }finally{
+      setpostLoading(false)
     }
   };
 
-  const FollowUser = async (toId) => {
+const FollowUser = async (toId) => {
+  setIsFollowing((prev) => !prev);
+
+  try {
+    let res;
     if (IsFollowing) {
-      const res = await Functions.handleUnFollow(toId);
-      if (res.status == 200) {
-        setIsFollowing(false);
-      }
-    } else {
-      const res = await Functions.handleFollow(toId);
-      if (res.status == 200) {
+      res = await Functions.handleUnFollow(toId);
+      if (res.status !== 200) {
         setIsFollowing(true);
       }
+    } else {
+      res = await Functions.handleFollow(toId);
+      if (res.status !== 200) {
+        setIsFollowing(false);
+      }
     }
-    fetchUser();
-  };
+  } catch (err) {
+    setIsFollowing((prev) => !prev);
+  }
+};
+
 
   useEffect(() => {
     if (!loading && user) {
@@ -202,9 +214,15 @@ const UserPage = () => {
                   <Blogcard key={post._id} blog={post} />
                 ))}
 
-              {Posts.length === 0 && (
+              {(Posts.length === 0 && !postLoading) && (
                 <p className="text-gray-500 dark:text-gray-400">
                   No posts yet.
+                </p>
+              )}
+
+              {postLoading && ( 
+                 <p className="text-gray-500 mt-10 dark:text-gray-400 flex gap-4 items-center justify-center">
+                  Loading Posts <AiOutlineLoading size={25} className="animate-spin"/>
                 </p>
               )}
             </div>

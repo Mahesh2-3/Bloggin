@@ -139,6 +139,7 @@ const Profile = () => {
     const res = await Functions.fetchUser(user?._id);
     if (res.status == 200) {
       setUserData(res.data);
+      console.log(res.data);
       setAboutMe(res.data.bio || "");
     } else {
       showMessage("Error fetching user data", "#ff0000");
@@ -280,7 +281,10 @@ const Profile = () => {
         EFFECTS
   ============================ */
   useEffect(() => {
-    if (user) setUserData(user);
+    if (user){
+      setUserData(user);
+      setAboutMe(user.bio);
+    };
   }, [user]);
 
   const modules = {
@@ -470,7 +474,7 @@ const Profile = () => {
                 id="name"
                 value={UserData?.name || ""}
                 onChange={handleInputChange}
-                className="w-full sm:w-[350px] p-3 rounded-xl text-gray-700 dark:text-gray-300 border-b outline-none"
+                className="w-full sm:w-[350px] p-3 text-gray-700 dark:text-gray-300 border-b outline-none"
                 placeholder="Enter your name..."
               />
             </div>
@@ -489,7 +493,7 @@ const Profile = () => {
                 id="username"
                 value={UserData?.username || ""}
                 onChange={handleInputChange}
-                className="w-full sm:w-[350px] p-3 rounded-xl text-gray-700 dark:text-gray-300 border-b outline-none"
+                className="w-full sm:w-[350px] p-3  text-gray-700 dark:text-gray-300 border-b outline-none"
                 placeholder="Enter your username..."
               />
             </div>
@@ -508,7 +512,7 @@ const Profile = () => {
                 id="email"
                 value={UserData?.email || ""}
                 onChange={handleInputChange}
-                className="w-full sm:w-[350px] p-3 rounded-xl text-gray-700 dark:text-gray-300 border-b outline-none"
+                className="w-full sm:w-[350px] p-3 text-gray-700 dark:text-gray-300 border-b outline-none"
                 placeholder="Enter your email..."
               />
             </div>
@@ -524,7 +528,7 @@ const Profile = () => {
                   }
                 />
               </label>
-              <div className="bg-white h-fit overflow-y-auto hide-scrollbar text-black dark:text-white dark:bg-[#181818] rounded-md p-2">
+              <div className="bg-white h-fit overflow-y-auto hide-scrollbar text-black dark:text-white dark:bg-[#181818] p-2">
                 <div className="min-w-full">
                   <ReactQuill
                     theme="snow"
@@ -608,7 +612,7 @@ const Profile = () => {
                 type={passwordView[1] ? "text" : "password"}
                 name="newPassword"
                 id="newPassword"
-                className="w-[350px] p-3 rounded-xl text-gray-700 dark:text-gray-300 border-b outline-none"
+                className="w-[350px] p-3 text-gray-700 dark:text-gray-300 border-b outline-none"
                 placeholder="Enter your new password..."
               />
               {passwordView[1] ? (
@@ -632,7 +636,7 @@ const Profile = () => {
           <div className="flex flex-col-reverse sm:flex-row items-center justify-between w-full max-w-xl gap-3 mt-4">
             {!Verified && (
               <button
-                className="px-6 py-3 mt-5 rounded-md hover:border-b border-red-300 text-red-300 font-semibold"
+                className="px-6 py-3 mt-5 hover:border-b border-red-300 text-red-300 font-semibold"
                 type="button"
                 onClick={handleForgotPassword}
               >

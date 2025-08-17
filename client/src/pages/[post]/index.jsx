@@ -127,28 +127,39 @@ const PostPage = () => {
   };
 
   const FollowUser = async (toId) => {
-    if (Following) {
-      const res = await Functions.handleUnFollow(toId);
-      if (res.status == 200) {
-        setFollowing(false);
+    setFollowing((prev) => !prev);
+
+    try {
+      let res;
+      if (Following) {
+        res = await Functions.handleUnFollow(toId);
+      } else {
+        res = await Functions.handleFollow(toId);
       }
-    } else {
-      const res = await Functions.handleFollow(toId);
-      if (res.status == 200) {
-        setFollowing(true);
+
+      if (res.status !== 200) {
+        setFollowing((prev) => !prev);
       }
+    } catch (err) {
+      setFollowing((prev) => !prev);
     }
-    fetchPost();
   };
 
   const onLikeClick = async () => {
-    const result = await Functions.handleLike(postId); // Await result
-    console.log(result);
-    if (result.status == 200) {
-      setLiked(result.data.liked); // Set correct like state from response
-      setLikeCount(result.data.likeCount);
-    } else {
-      showMessage("error adding likes", "#ff0000");
+    setLiked((prev) => !prev);
+    setLikeCount((prev) => prev + (liked ? -1 : 1));
+
+    try {
+      const result = await Functions.handleLike(PostData?._id);
+      if (result.status == 200) {
+        // Ensure state matches backend if optimistic guess was wrong
+        setLiked(result.data.liked);
+        setLikeCount(result.data.likeCount);
+      }
+    } catch (err) {
+      // Revert if request fails
+      setLiked((prev) => !prev);
+      setLikeCount((prev) => prev + (liked ? 1 : -1));
     }
   };
   useEffect(() => {
@@ -331,8 +342,8 @@ const PostPage = () => {
                     onClick={addComment}
                     className="bg-black text-white cursor-pointer py-2 px-4 rounded-md flex w-[90px] h-[40px] items-center justify-center gap-2"
                   >
-                    {(loading == "addingcomment" ||
-                    loading == "editingcomment") ? (
+                    {loading == "addingcomment" ||
+                    loading == "editingcomment" ? (
                       <AiOutlineLoading
                         size={20}
                         strokeWidth={3}

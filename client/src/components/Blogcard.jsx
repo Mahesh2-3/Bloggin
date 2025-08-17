@@ -17,10 +17,18 @@ const Blogcard = ({ blog }) => {
   const [likeCount, setlikeCount] = useState(blog?.likes.length || 0);
 
   const onLikeClick = async () => {
-    const result = await Functions.handleLike(blog?._id); // Await result
-    if (result.status == 200) {
-      setlikeStatus(result.data.liked); // Set correct like state from response
-      setlikeCount(result.data.likeCount); // Update like count
+    setlikeStatus((prev) => !prev);
+    setlikeCount((prev) => prev + (likeStatus ? -1 : 1));
+
+    try {
+      const result = await Functions.handleLike(blog?._id);
+      if (result.status == 200) {
+        setlikeStatus(result.data.liked);
+        setlikeCount(result.data.likeCount);
+      }
+    } catch (err) {
+      setlikeStatus((prev) => !prev);
+      setlikeCount((prev) => prev + (likeStatus ? 1 : -1));
     }
   };
 

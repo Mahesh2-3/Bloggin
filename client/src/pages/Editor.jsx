@@ -224,7 +224,7 @@ const CreatePost = () => {
           value={postData.title}
           onChange={(e) => handleChange("title", e.target.value)}
           placeholder="Title"
-          className="w-full text-4xl rounded-xl font-bold bg-transparent border-b outline-none placeholder:text-gray-300 placeholder:dark:text-gray-900"
+          className="w-full text-4xl font-bold bg-transparent border-b outline-none placeholder:text-gray-300 placeholder:dark:text-gray-900"
         />
 
         {/* Description */}

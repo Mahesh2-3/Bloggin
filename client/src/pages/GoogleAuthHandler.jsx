@@ -51,7 +51,7 @@ const GoogleAuthHandler = () => {
   }, []);
 
   return (
-    <div style={{ textAlign: "center", marginTop: "3rem" }}>
+    <div style={{ textAlign: "center", marginTop: "3rem" }} className="bg-black text-white">
       Logging you in with Google...
     </div>
   );
