@@ -16,11 +16,13 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useNavigate } from "react-router-dom";
 import { useTitle } from "../context/DynamicTitle";
+import { usePosts } from "../components/PostsContext";
 
 const Profile = () => {
   useTitle("Settings ");
   const { user, logout, login } = useAuth();
   const { showMessage } = useMessage();
+  const { refreshPosts } = usePosts();
   const navigate = useNavigate();
 
   // Profile states
@@ -199,11 +201,13 @@ const Profile = () => {
 
       showMessage("Profile updated successfully", "#00b300");
       fetchingUser();
+      navigate(`/${UserData.username}`);
     } catch (error) {
       console.error(error);
       showMessage("Failed to update profile", "#e3101e");
     } finally {
       setLoading("");
+      refreshPosts();
     }
   };
 

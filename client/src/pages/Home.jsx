@@ -80,7 +80,7 @@ const Home = () => {
       .filter((u) => u._id !== user?._id) // exclude current user
       .filter((u) => !(user?.following || []).includes(u._id)) // exclude already following
       .sort((a, b) => (b.followers?.length || 0) - (a.followers?.length || 0)) // sort by followers count
-      .slice(0, 5);
+      .slice(0, 3);
   }
 
   // Tags for filtering

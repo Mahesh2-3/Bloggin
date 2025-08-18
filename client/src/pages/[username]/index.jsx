@@ -8,10 +8,12 @@ import { FiEdit3 } from "react-icons/fi";
 import Blogcard from "../../components/Blogcard";
 import { useTitle } from "../../context/DynamicTitle";
 import { AiOutlineLoading } from "react-icons/ai";
+import { usePosts } from "../../components/PostsContext";
 
 const UserPage = () => {
   const { username } = useParams();
   const { user, loading } = useAuth();
+  const {refreshPosts} = usePosts()
   const [activeTab, setActiveTab] = useState("Posts");
   const [userData, setUserData] = useState(null);
   const token = localStorage.getItem("token"); // or however you store it
@@ -20,9 +22,9 @@ const UserPage = () => {
   const [Followers, setFollowers] = useState([]);
   const [Following, setFollowing] = useState([]);
   const [NotFound, setNotFound] = useState(false);
-  const [postLoading, setpostLoading] = useState(false)
-  useTitle(`${userData?.name} `)
-  
+  const [postLoading, setpostLoading] = useState(false);
+  useTitle(`${userData?.name} `);
+
   const fetchUser = async () => {
     setpostLoading(true);
     try {
@@ -73,36 +75,37 @@ const UserPage = () => {
         setNotFound(true);
       }
       console.error("Failed to fetch user data", err.status);
-    }finally{
-      setpostLoading(false)
+    } finally {
+      setTimeout(() => {
+        
+        setpostLoading(false);
+      }, 700);
     }
   };
 
-const FollowUser = async (toId) => {
-  setIsFollowing((prev) => !prev);
-
-  try {
-    let res;
-    if (IsFollowing) {
-      res = await Functions.handleUnFollow(toId);
-      if (res.status !== 200) {
-        setIsFollowing(true);
-      }
-    } else {
-      res = await Functions.handleFollow(toId);
-      if (res.status !== 200) {
-        setIsFollowing(false);
-      }
-    }
-  } catch (err) {
+  const FollowUser = async (toId) => {
     setIsFollowing((prev) => !prev);
-  }finally{
-    fetchUser()
-        refreshPosts()
 
-  }
-};
-
+    try {
+      let res;
+      if (IsFollowing) {
+        res = await Functions.handleUnFollow(toId);
+        if (res.status !== 200) {
+          setIsFollowing(true);
+        }
+      } else {
+        res = await Functions.handleFollow(toId);
+        if (res.status !== 200) {
+          setIsFollowing(false);
+        }
+      }
+    } catch (err) {
+      setIsFollowing((prev) => !prev);
+    } finally {
+      fetchUser();
+      refreshPosts();
+    }
+  };
 
   useEffect(() => {
     if (!loading && user) {
@@ -130,14 +133,18 @@ const FollowUser = async (toId) => {
       </div>
     );
   }
-  if (!userData && !NotFound) {
+  if (!NotFound && postLoading) {
     return (
-      <div className="text-center pt-20 text-gray-500 dark:text-gray-300">
-        Loading user...
+      <div className="w-full min-h-screen flex gap-4 justify-center items-center dark:bg-black bg-white dark:text-white text-black">
+        <span>Loading user</span>
+        <AiOutlineLoading
+          size={30}
+          strokeWidth={3}
+          className="animate-spin"
+        />{" "}
       </div>
     );
-  }
-
+  }else{
   return (
     <div className="w-full font-normal pt-[70px] bg-white dark:bg-black text-black dark:text-white min-h-screen">
       <Navbar />
@@ -218,17 +225,12 @@ const FollowUser = async (toId) => {
                   <Blogcard key={post._id} blog={post} />
                 ))}
 
-              {(Posts.length === 0 && !postLoading) && (
+              {Posts.length === 0 && !postLoading && (
                 <p className="text-gray-500 dark:text-gray-400">
                   No posts yet.
                 </p>
               )}
 
-              {postLoading && ( 
-                 <p className="text-gray-500 mt-10 dark:text-gray-400 flex gap-4 items-center justify-center">
-                  Loading Posts <AiOutlineLoading size={25} className="animate-spin"/>
-                </p>
-              )}
             </div>
           )}
 
@@ -255,7 +257,11 @@ const FollowUser = async (toId) => {
                     className="w-8 h-8 rounded-full object-cover"
                   />
                   <div>
-                    <Link to={`/${follower.username}`}><p className="font-medium hover:underline">{follower.name}</p></Link>
+                    <Link to={`/${follower.username}`}>
+                      <p className="font-medium hover:underline">
+                        {follower.name}
+                      </p>
+                    </Link>
                     <p className="text-gray-500 dark:text-gray-400">
                       @{follower.username}
                     </p>
@@ -284,7 +290,11 @@ const FollowUser = async (toId) => {
                     className="w-8 h-8 rounded-full object-cover"
                   />
                   <div>
-                    <Link to={`/${followed.username}`}><p className="font-medium hover:underline">{followed.name}</p></Link>
+                    <Link to={`/${followed.username}`}>
+                      <p className="font-medium hover:underline">
+                        {followed.name}
+                      </p>
+                    </Link>
                     <p className="text-gray-500 dark:text-gray-400">
                       @{followed.username}
                     </p>
@@ -302,6 +312,7 @@ const FollowUser = async (toId) => {
       </div>
     </div>
   );
+}
 };
 
 export default UserPage;

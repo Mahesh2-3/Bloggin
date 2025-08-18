@@ -5,6 +5,7 @@ import UseAuth from "../context/Auth";
 import { MdOutlineEmail, MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { TbArrowBarToLeft } from "react-icons/tb";
 import { useTitle } from "../context/DynamicTitle";
+import { FcGoogle } from "react-icons/fc";
 
 const Signup = () => {
   useTitle("SignUp ")
@@ -214,7 +215,7 @@ const Signup = () => {
               onClick={googleLogin}
               className="w-full bg-white flex items-center justify-center gap-2 text-black py-2 h-[50px] rounded-md font-medium mb-4 hover:bg-gray-200 transition"
             >
-              <img src="/google.png" className="scale-90" alt="google" />
+          <FcGoogle size={25}/>
               Continue with Google
             </button>
             <div className="flex items-center gap-2 text-gray-300 my-4">

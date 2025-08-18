@@ -10,12 +10,14 @@ import { useMessage } from "../context/MessageContext";
 import useAuth from "../context/Auth";
 import { useTitle } from "../context/DynamicTitle";
 import { AiOutlineLoading } from "react-icons/ai";
+import { usePosts } from "../components/PostsContext";
 
 const CreatePost = () => {
   const navigate = useNavigate();
   const { postId } = useParams();
   const { showMessage } = useMessage();
   const { user } = useAuth();
+  const {refreshPosts}= usePosts()
 
   // -------------------- State --------------------
   const [postData, setPostData] = useState({
@@ -30,7 +32,7 @@ const CreatePost = () => {
   const [preview, setPreview] = useState(null);
   const [selectedTags, setSelectedTags] = useState([]);
   const [loading, setLoading] = useState({ uploading: false, deleting: false });
-  const [publishing, setpublishing] = useState(true);
+  const [publishing, setpublishing] = useState(false);
 
   // -------------------- Handlers --------------------
   const handleChange = (field, value) => {
@@ -177,6 +179,7 @@ const CreatePost = () => {
       showMessage("Failed to save post.", "#e3101e");
     } finally {
       setpublishing(false);
+      refreshPosts();
     }
   };
 
@@ -326,6 +329,7 @@ const CreatePost = () => {
         {/* Submit */}
         <button
           type="submit"
+          disabled={publishing}
           className="bg-black dark:bg-white px-6 py-2 flex items-center justify-center gap-4 rounded text-white dark:text-black transition"
         >
           {postId ? <>Update Post  {publishing && <AiOutlineLoading size={25} className="animate-spin"/>}</> : <>Publish Post {publishing && <AiOutlineLoading size={25} className="animate-spin"/>}</>}

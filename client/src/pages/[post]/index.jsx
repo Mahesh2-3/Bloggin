@@ -45,23 +45,20 @@ const PostPage = () => {
 
   const fetchPost = async () => {
     setloading("fetchingpost");
-    try {
-      const res = await Functions.fetchPost(postId);
-      setPostData(res.data);
-    } finally {
-      setloading("");
-    }
+    const res = await Functions.fetchPost(postId);
+    setPostData(res.data);
+    setTimeout(() => {
+      setloading(""); // delay hiding loader
+    }, 1000);
   };
 
   const fetchComments = async () => {
-    setloading("fetchingcomments");
     const res = await Functions.handleGetComments(postId);
     if (res.status != 200) {
       showMessage("Error fetching data!", "#ff0000");
       return;
     }
     setComments(res.data);
-    setloading("");
   };
 
   const addComment = async () => {
@@ -190,11 +187,11 @@ const PostPage = () => {
     likeStatus();
   }, [postId]);
 
-  if (loading == "fetchingpost") {
+  if (loading === "fetchingpost") {
     return (
       <div className="w-full min-h-screen flex gap-4 justify-center items-center dark:bg-black bg-white dark:text-white text-black">
+        <span>Loading Post</span>
         <AiOutlineLoading size={30} strokeWidth={3} className="animate-spin" />{" "}
-        <span>Loading Post...</span>
       </div>
     );
   } else if (loading == "deletingpost") {
@@ -329,7 +326,7 @@ const PostPage = () => {
             </div>
           </div>
           {commentsOpen && (
-            <div className="rounded-md text-black xl:relative absolute w-full sm:w-[400px] bg-white border border-gray-500 min-h-screen overflow-y-auto  top-42 xl:top-0 right-0 p-4 px-6">
+            <div className="rounded-md text-black xl:relative absolute w-full sm:w-[400px] bg-white border border-gray-500 min-h-screen overflow-y-auto top-42 xl:top-12 right-0 p-4 px-6">
               <IoCloseOutline
                 onClick={() => {
                   setCommentsOpen(false);
@@ -381,9 +378,9 @@ const PostPage = () => {
                           className="w-10 h-10 rounded-full object-cover"
                         />
                         <div className="flex flex-col gap-1 pt-2 w-full">
-                          <div className="flex items-center justify-between">
-                            <div className="text-sm flex gap-2 items-center mb-2 font-medium">
-                              <span>@{comment.user.username}</span>
+                          <div className="flex items-center w-full justify-between">
+                            <div className="text-sm flex gap-2 w-full items-center mb-2 font-medium">
+                              <Link to={`/${comment.user.username}`} className="max-w-[80%] overflow-ellipsis break-all line-clamp-1">@{comment.user.name}</Link>
                               <span className="text-xs text-gray-400">
                                 • {Functions.getTimeAgo(comment?.createdAt)}
                               </span>

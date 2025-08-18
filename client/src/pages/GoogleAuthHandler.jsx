@@ -2,6 +2,8 @@ import React, { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import useAuth from "../context/Auth";
 import {useMessage} from "../context/MessageContext"
+import { AiOutlineLoading } from "react-icons/ai";
+
 
 const GoogleAuthHandler = () => {
   const {showMessage} = useMessage();
@@ -51,8 +53,9 @@ const GoogleAuthHandler = () => {
   }, []);
 
   return (
-    <div style={{ textAlign: "center", marginTop: "3rem" }} className="bg-black text-white">
-      Logging you in with Google...
+    <div style={{ textAlign: "center", marginTop: "3rem" }} className="bg-black min-w-screen min-h-screen h-full w-full flex items-center gap-4 justify-center text-white">
+      Logging you in with Google
+        <AiOutlineLoading size={30} strokeWidth={3} className="animate-spin" />{" "}
     </div>
   );
 };

@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import { useMessage } from "../context/MessageContext";
 import { useTitle } from "../context/DynamicTitle";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import {FcGoogle} from "react-icons/fc";
 
 const Login = () => {
   useTitle("Login ")
@@ -67,6 +68,9 @@ const Login = () => {
     const errorMsg = params.get("error");
     if (errorMsg) {
       showMessage(errorMsg, "#ff0000");
+      setTimeout(() => {
+        navigate("/login")
+      }, 1000);
     }
   }, [location.search]);
 
@@ -114,7 +118,7 @@ const Login = () => {
           onClick={googleLogin}
           className="w-full bg-white flex items-center justify-center gap-2 text-black py-2 h-[50px] rounded-md font-medium mb-6 hover:bg-gray-200 transition"
         >
-          <img src="/google.png" className="scale-90" alt="google" />
+          <FcGoogle size={25}/>
           Continue with Google
         </button>
 
