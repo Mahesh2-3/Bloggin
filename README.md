@@ -31,8 +31,6 @@ With high-security authentication, a sleek UI, and interactive community feature
 - Redux Toolkit  
 - React Router DOM  
 - React Quill  
-- MUI Components  
-- GSAP Animations  
 
 **Backend:**  
 - Node.js + Express.js  
@@ -41,7 +39,6 @@ With high-security authentication, a sleek UI, and interactive community feature
 - Passport (Google OAuth)  
 - JWT Authentication  
 - Cloudinary (Image Uploads)  
-- Multer (File Uploads)  
 - Nodemailer (OTP Verification)  
 
 **Deployment:**  
